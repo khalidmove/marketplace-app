@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { createRef, useContext, useEffect, useRef, useState } from 'react';
 import MapView, {
   Marker,
   Polygon,
@@ -32,12 +32,13 @@ import Constants, { Currency, FONTS, Googlekey } from '../../Assets/Helpers/cons
 import moment from 'moment';
 import { goBack, navigate } from '../../../navigationRef';
 import { LoadContext, ToastContext } from '../../../App';
-import { GetApi, Post } from '../../Assets/Helpers/Service';
+import { ApiFormData, GetApi, Post } from '../../Assets/Helpers/Service';
 import Header from '../../Assets/Component/Header';
-import { CheckboxactiveIcon } from '../../../Theme';
+import { CheckboxactiveIcon, CrossIcon, UploadIcon } from '../../../Theme';
 import DriverHeader from '../../Assets/Component/DriverHeader';
 import { useTranslation } from 'react-i18next';
 import LabelWithColon from '../../Assets/Helpers/LabelWithColon';
+import CameraGalleryPeacker from '../../Assets/Component/CameraGalleryPeacker';
 // import CustomCurrentLocation from '../../Component/CustomCurrentLocation';
 
 const Map = props => {
@@ -50,6 +51,7 @@ const Map = props => {
   const [modalVisible5, setModalVisible5] = useState(false);
   const [modalVisible4, setModalVisible4] = useState(false);
   const [modalVisible3, setModalVisible3] = useState(false);
+  const [modalVisible6, setModalVisible6] = useState(false);
   const [toast, setToast] = useContext(ToastContext);
   const [loading, setLoading] = useContext(LoadContext);
   const [from, setFrom] = useState('');
@@ -59,7 +61,11 @@ const Map = props => {
   const [destinationadd, setdestinationadd] = useState(null);
   const [per, setper] = useState(null);
   const [orderdetail, setorderdetail] = useState();
+  const [submitted, setSubmitted] = useState(false);
+  const [cheakimg, setcheakimg] = useState('');
+  const [uploadimg, setuploadimg] = useState([{imgname: ''}]);
 
+  const cameraRef = createRef();
   const mapRef = useRef(null);
   const animatedValue = new Animated.Value(0);
   const [routeCoordinates, setRouteCoordinates] = useState([]);
@@ -71,7 +77,7 @@ const Map = props => {
     CustomCurrentLocation();
   }, [data]);
 
-  const CustomCurrentLocation = async () => {
+  const CustomCurrentLocation = async (myModal) => {
     try {
       if (Platform.OS === 'ios') {
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE).then(result => {
@@ -86,6 +92,9 @@ const Map = props => {
                   latitudeDelta: 0.015,
                   longitudeDelta: 0.0121,
                 });
+                if (myModal) {
+                  myModal(true)
+                }
               },
               error => {
                 console.log(error.code, error.message);
@@ -93,6 +102,12 @@ const Map = props => {
               },
               { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
             );
+          }else {
+            if (result === 'blocked') {
+              setToast(
+                'You had blocked notification. please allow that manualy then you can complete this task',
+              );
+            }
           }
         });
       } else {
@@ -110,6 +125,9 @@ const Map = props => {
                 latitudeDelta: 0.015,
                 longitudeDelta: 0.0121,
               });
+                 if (myModal) {
+                  myModal(true)
+                }
             },
             error => {
               console.log(error.code, error.message);
@@ -118,6 +136,11 @@ const Map = props => {
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
           );
         } else {
+          if (granted === 'blocked') {
+            setToast(
+              'You had blocked notification. please allow that manualy then you can complete this task',
+            );
+          }
           console.log('location permission denied');
         }
       }
@@ -267,7 +290,43 @@ const Map = props => {
       },
     );
   };
-  // console.log('locationadd', locationadd);
+
+  const completeride = async id => {
+    if (!cheakimg) {
+      setSubmitted(true);
+      return;
+    }
+    const newdata = {
+      id: id,
+      status: 'Delivered',
+      deliveryimg: uploadimg,
+      deliverylocation: {
+        type: 'Point',
+        coordinates: [location.longitude, location.latitude],
+      },
+    };
+    console.log('!@#$%===', newdata);
+    setLoading(true);
+    Post(`changeorderstatus`, newdata, {}).then(
+      async res => {
+        setLoading(false);
+        if (res.status) {
+        console.log(res);
+        setToast('Job Completed');
+        setuploadimg([{imgname: ''}]);
+        setModalVisible6(false);
+        MyOrders()
+        setSubmitted(false);
+        setcheakimg('');
+        }
+      },
+      err => {
+        setLoading(false);
+        console.log(err);
+      },
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <DriverHeader item={t('My orders')} showback={true} />
@@ -438,7 +497,7 @@ const Map = props => {
       {orderdetail?.status === 'Collected' && (orderdetail?.paymentmode === 'pay' || orderdetail.cashcollected === 'Yes') && orderdetail?.onthewaytodelivery && (
         <TouchableOpacity
           style={styles.signInbtn}
-          onPress={() => setModalVisible2(true)}>
+          onPress={() => CustomCurrentLocation(setModalVisible6)}>
           <Text style={styles.buttontxt}>{t('Finish Ride')}</Text>
         </TouchableOpacity>
       )}
@@ -539,7 +598,8 @@ const Map = props => {
                   activeOpacity={0.9}
                   style={styles.logOutButtonStyle}
                   onPress={() => {
-                    deliverorder(orderdetail._id), setModalVisible2(false);
+                    // deliverorder(orderdetail._id), setModalVisible2(false);
+                    
                   }}>
                   <Text style={styles.modalText}>{t('Yes')}</Text>
                 </TouchableOpacity>
@@ -670,6 +730,118 @@ const Map = props => {
                     Acceptorder(orderdetail._id);
                   }}>
                   <Text style={styles.modalText}>{t('Yes')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible6}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisible6(!modalVisible6);
+        }}>
+        <View style={styles.centeredView}>
+          <View
+            style={styles.modalView}>
+            <View
+              style={{
+                alignItems: 'center',
+                marginHorizontal:20
+              }}>
+              <CrossIcon
+                style={{
+                  alignSelf: 'flex-end',
+                  position: 'absolute',
+                  top: -8,
+                  right: 10,
+                }}
+                height={18}
+                width={18}
+                onPress={() => {
+                  setModalVisible6(!modalVisible6);
+                  setuploadimg([{imgname: ''}]);
+                  setcheakimg('');
+                  setSubmitted(false);
+                }}
+                color={Constants.black}
+              />
+              <Text
+                style={[
+                  styles.textStyle,
+                  {color: Constants.black},
+                ]}>
+                Please upload your delivery image
+              </Text>
+              {uploadimg.map((item, i) => {
+                return (
+                  <View
+                    key={i}
+                    style={styles.textInput}>
+                    <TextInput
+                      style={styles.input}
+                      value={item.imgname}
+                    />
+                    <UploadIcon
+                      color={ Constants.customgrey}
+                      height={25}
+                      width={25}
+                      style={{alignSelf: 'center'}}
+                      onPress={() => cameraRef.current.show()}
+                    />
+                    <CameraGalleryPeacker
+                      refs={cameraRef}
+                      getImageValue={async img => {
+                    
+                        ApiFormData(img.assets[0]).then(
+                          res => {
+                            console.log(res);
+                            if (res.status) {
+                              item.imgname = res.data.file;
+                              setuploadimg([...uploadimg]);
+                              setcheakimg(res.data.file);
+                            }
+                          },
+                          err => {
+                            console.log(err);
+                          },
+                        );
+                      }}
+                      base64={false}
+                      cancel={()=>{}}
+                    />
+                    <View
+                      style={styles.mylivejobtitle}>
+                      <Text
+                        style={styles.jobtitle}>
+                        Upload Delivery Image
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })}
+              {submitted && cheakimg === '' && (
+                <Text style={{color: 'red', marginTop: 10}}>
+                  Image is required
+                </Text>
+              )}
+              <TouchableOpacity
+                activeOpacity={0.9}
+                style={styles.addcov}
+                onPress={() => setuploadimg([...uploadimg, {imgname: ''}])}>
+                <Text style={styles.addcovtxt}>Add more</Text>
+              </TouchableOpacity>
+
+              <View style={styles.cancelAndLogoutButtonWrapStyle}>
+
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  style={styles.logOutButtonStyle}
+                  onPress={() => completeride(orderdetail._id)}>
+                  <Text style={styles.modalText}>Submit</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -935,5 +1107,53 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 5
     // alignSelf:'center'
+  },
+  textInput: {
+    borderColor: Constants.customgrey,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    // width: 370,
+    height: 60,
+    marginTop: 40,
+    flexDirection: 'row',
+  },
+  input: {
+    marginLeft: 10,
+    fontSize: 14,
+    fontWeight: '400',
+    fontFamily: FONTS.Medium,
+    color: Constants.black,
+    flex: 1,
+  },
+  mylivejobtitle: {
+    position: 'absolute',
+    backgroundColor: Constants.white,
+    paddingHorizontal: 5,
+    top: -13,
+    left: 30,
+  },
+  jobtitle: {
+    color: Constants.black,
+    fontSize: 13,
+    fontFamily: FONTS.SemiBold,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  addcov: {
+    // height:40,
+    backgroundColor: Constants.green,
+    alignSelf: 'flex-end',
+    marginTop: 15,
+    borderRadius: 5,
+  },
+  addcovtxt: {
+    color: Constants.white,
+    // fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: FONTS.Bold,
+    fontSize: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 });
