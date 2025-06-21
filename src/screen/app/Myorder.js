@@ -290,6 +290,62 @@ const Myorder = () => {
                     </View> */}
                 </View>
               ))}
+              {item?.comboProductDetail.map((prod, index) => (
+                // {[1].map((prod, index) => (
+                <View key={index}>
+                  <View style={{flexDirection: 'row', marginBottom: 5}}>
+                    <TouchableOpacity style={{alignSelf:'center'}}>
+                    <Image
+                      // source={require('../../Assets/Images/meal.png')}
+                      source={
+                        prod?.comboItems?.[0]?.product?.varients[0]?.image
+                          ? {
+                              uri: `${prod?.comboItems?.[0]?.product?.varients[0]?.image}`,
+                            }
+                          : require('../../Assets/Images/veg.png')
+                      }
+                      style={styles.cartimg}
+                      resizeMode="contain"
+                    />
+                    </TouchableOpacity>
+                    <View style={{flex: 1, marginLeft: 10}}>
+                      <Text>
+                      {prod?.comboItems&&prod?.comboItems?.length>0&&prod?.comboItems.map((it,ind)=><Text style={styles.boxtxt} key={ind}>{it?.product?.name}{prod?.comboItems?.length > 1 && ", "}</Text>)}
+                      </Text>
+                      <Text >
+                      {prod?.comboItems&&prod?.comboItems?.length>0&&prod?.comboItems.map((itm,inde)=>
+                      <Text style={styles.qty} key={inde}>
+                        {itm?.price_slot?.value} {itm?.price_slot?.unit}{","}
+                      </Text>)}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          // marginVertical: 10,
+                        }}>
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text style={styles.boxtxt2}>{t('Qty')}</Text>
+                          <Text style={styles.boxtxt2}> :- {prod?.qty}</Text>
+                        </View>
+                        <Text style={styles.boxtxt3}>
+                          {Currency} {prod?.price}{' '}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  {/* <View style={{alignSelf: 'center', marginBottom: 5}}>
+                      <StarRating
+                        rating={prod?.rating}
+                        enableHalfStar={false}
+                        color={Constants.violet}
+                        onChange={() => {}}
+                        onRatingEnd={e => rating(prod.id, e)}
+                      />
+                    </View> */}
+                </View>
+              ))}
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <Text></Text>

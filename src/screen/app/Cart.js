@@ -270,6 +270,7 @@ const Cart = () => {
                     setModalVisible2(true);
                   }}>
                     <Image source={{ uri: item.image }} style={styles.cardimg} />
+                    {item?.type === "combo" &&<Image source={require('../../Assets/Images/combo.png')} style={styles.comboimg} /> }
                   </TouchableOpacity>
                   <View>
                     <Text style={styles.productname}>{item.productname}</Text>
@@ -277,7 +278,25 @@ const Cart = () => {
                       <Text style={styles.maintxt}> {Currency} {item.offer}</Text>
                       <Text style={styles.disctxt}> {Currency} {item.price}</Text>
                     </View>
-                    <Text style={styles.qty}>{item?.price_slot?.value} {item?.price_slot?.unit}</Text>
+                    <Text style={styles.qty}>{item?.price_slot?.value && item?.price_slot?.unit
+                          ? item?.price_slot?.value +
+                            " " +
+                            item?.price_slot?.unit
+                          : Array.isArray(item?.comboItems) &&
+                            item?.comboItems.length > 0
+                          ? item?.comboItems.map((comboItem, index) => (
+                              <Text key={index}>
+                                {comboItem?.selected_slot
+                                  ? comboItem?.selected_slot?.value +
+                                    " " +
+                                    comboItem?.selected_slot?.unit
+                                  : comboItem?.value}
+                                {index < item?.comboItems.length - 1
+                                  ? ", "
+                                  : ""}
+                              </Text>
+                            ))
+                          : "N/A"}</Text>
                   </View>
                 </View>
                 <CrossIcon
@@ -445,7 +464,7 @@ const Cart = () => {
                 <Text style={styles.changadd}>{t('CHANGE ADDRESS')}</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.cartbtn} onPress={() => user?.shipping_address?.address ? navigate('Checkout', { deliveryfee: deliveryfee, deliveryPartnerTip: seltips, tax: (taxrate > 0 ? (Number(totaloff) * taxrate) / 100 : 0) }) : navigate('Shipping', { type: 'checkout' })}>
+            <TouchableOpacity style={styles.cartbtn} onPress={() => user?.shipping_address?.address ? navigate('Checkout', { deliveryfee: deliveryfee, deliveryPartnerTip: seltips, tax: (taxrate > 0 ? (Number(totaloff) * taxrate) / 100 : 0),servicefee:servicefee > 0 ? servicefee : 0 }) : navigate('Shipping', { type: 'checkout' })}>
               <Text style={styles.buttontxt}>
                 {t('CONTINUE TO PAY')} {Currency}{Number(totaloff) + (taxrate > 0 ? (Number(totaloff) * taxrate) / 100 : 0)+ (servicefee > 0 ? servicefee : 0) +
                   Number(deliveryfee) +
@@ -881,4 +900,11 @@ const styles = StyleSheet.create({
     textAlign:'right',
     marginTop:-10
   },
+  comboimg:{
+    height:30,
+    width:30,
+    position:'absolute',
+    top:-10,
+    right:-10
+  }
 });

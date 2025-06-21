@@ -245,7 +245,12 @@
     "Select Time Slot": "کاتژمێر دیاری بکە",
     "Assign Employee": "کارمەند دیاری بکە",
     "Assign": "دیاری بکە",
-    "Done": "تەواو بوو"
+    "Done": "تەواو بوو",
+    "Tax":"باژ",
+    "Service Fee":"ر‌سومی خزمەتگوزاری",
+    "start_delivering": "دەست بە گەیاندن بۆ {{username}} دەکەیت؟",
+    "Change Language": "زمان بگۆڕە",
+    "Are you sure you have Picked up the Products from the seller!": "دڵنیایت کە بەرهەمەکانت لە فرۆشیار وەرگرتووە؟"
 
   }
   

@@ -61,13 +61,13 @@ const Orderview = props => {
   };
 
   const submit = () => {
-    if (rtnreason==='') {
-      setToast('Please enter a reason for the return')
+    if (rtnreason === '') {
+      setToast('Please enter a reason for the return');
       return;
     }
 
     if (uploadimg?.length < 2) {
-      setToast('Please upload atleast two images')
+      setToast('Please upload atleast two images');
       return;
     }
     let data = {
@@ -75,7 +75,7 @@ const Orderview = props => {
       reason: rtnreason,
       refundProof: uploadimg,
     };
-    console.log(data)
+    console.log(data);
     setLoading(true);
     Patch(`refundProduct/${orderview?._id}`, data).then(async res => {
       setLoading(false);
@@ -119,9 +119,9 @@ const Orderview = props => {
             <Text style={styles.delevered}>{orderview?.status}</Text>
           </View>
         )}
-        <View style={{flexDirection:'row',marginLeft:20}}>
-        <Text textStyle={styles.secendboldtxt}>OrderId :- </Text>
-        <Text textStyle={styles.secendboldtxt2}>{orderview?.orderId}</Text>
+        <View style={{flexDirection: 'row', marginLeft: 20}}>
+          <Text textStyle={styles.secendboldtxt}>OrderId :- </Text>
+          <Text textStyle={styles.secendboldtxt2}>{orderview?.orderId}</Text>
         </View>
         {/* <View style={styles.optcov}>
           <Text style={[styles.opttxt,{borderBottomColor:Constants.black,paddingBottom:5,borderBottomWidth:selectrate==='ORDER'?1:0}]} onPress={()=>setselectrate('ORDER')}>Rate Order</Text>
@@ -151,26 +151,116 @@ const Orderview = props => {
             </View>
           </View>
         </View>} */}
-        {orderview?.productDetail && orderview?.productDetail.length > 0 ? (
-          orderview?.productDetail.map((item, i) => {
-            return (
-              <View style={[styles.box2]} key={i}>
-                <View style={{flexDirection: 'row'}}>
-                  <Image
-                    // source={require('../../Assets/Images/meal.png')}
-                    source={
-                      item?.image
-                        ? {
-                            uri: `${item.image}`,
-                          }
-                        : require('../../Assets/Images/veg.png')
-                    }
-                    style={styles.cartimg}
-                  />
-                  <View style={{flex: 1, marginLeft: 10, gap: 5}}>
-                    <Text style={styles.boxtxt}>{item?.product?.name}</Text>
-                    <Text style={styles.qty}>
-                      {item?.price_slot?.value} {item?.price_slot?.unit}
+        {orderview?._id ? (
+          <View>
+            {orderview?.productDetail &&
+              orderview?.productDetail.length > 0 &&
+              orderview?.productDetail.map((item, i) => {
+                return (
+                  <View style={[styles.box2]} key={i}>
+                    <View style={{flexDirection: 'row'}}>
+                      <Image
+                        // source={require('../../Assets/Images/meal.png')}
+                        source={
+                          item?.image
+                            ? {
+                                uri: `${item.image}`,
+                              }
+                            : require('../../Assets/Images/veg.png')
+                        }
+                        style={styles.cartimg}
+                      />
+                      <View style={{flex: 1, marginLeft: 10, gap: 5}}>
+                        <Text style={styles.boxtxt}>{item?.product?.name}</Text>
+                        <Text style={styles.qty}>
+                          {item?.price_slot?.value} {item?.price_slot?.unit}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            // marginVertical: 10,
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <Text style={styles.boxtxt2}>{t('Qty')}</Text>
+                            <Text style={styles.boxtxt2}>
+                              {''} :- {item?.qty}
+                            </Text>
+                          </View>
+                          <Text style={styles.boxtxt3}>
+                            {Currency} {item?.price}{' '}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
+                      {/* <StarRating
+                    rating={item.rating}
+                    enableHalfStar={false}
+                    color={Constants.custom_green}
+                    onChange={() => {}}
+                    onRatingEnd={e => rating(item.id, e)}
+                  /> */}
+                      {!item?.returnDetails?.isRefunded &&
+                        !item?.returnDetails?.isReturned &&
+                        Date.now() -
+                          new Date(orderview?.deliveredAt).getTime() <=
+                          15 * 60 * 1000 && (
+                          <Text
+                            style={styles.rtnbtn}
+                            onPress={() => {
+                              setModalVisible(true),
+                                setproductid(item?.product?._id);
+                            }}>
+                            Return
+                          </Text>
+                        )}
+                    </View>
+                  </View>
+                );
+              })}
+            {orderview?.comboProductDetail.map((prod, index) => (
+              // {[1].map((prod, index) => (
+              <View key={index} style={[styles.box2]}>
+                <View style={{flexDirection: 'row', marginBottom: 5}}>
+                  <TouchableOpacity style={{alignSelf: 'center'}}>
+                    <Image
+                      // source={require('../../Assets/Images/meal.png')}
+                      source={
+                        prod?.comboItems?.[0]?.product?.varients[0]?.image
+                          ? {
+                              uri: `${prod?.comboItems?.[0]?.product?.varients[0]?.image}`,
+                            }
+                          : require('../../Assets/Images/veg.png')
+                      }
+                      style={styles.cartimg}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                  <View style={{flex: 1, marginLeft: 10}}>
+                    <Text>
+                      {prod?.comboItems &&
+                        prod?.comboItems?.length > 0 &&
+                        prod?.comboItems.map((it, ind) => (
+                          <Text style={styles.boxtxt} key={ind}>
+                            {it?.product?.name}
+                            {prod?.comboItems?.length > 1 && ', '}
+                          </Text>
+                        ))}
+                    </Text>
+                    <Text>
+                      {prod?.comboItems &&
+                        prod?.comboItems?.length > 0 &&
+                        prod?.comboItems.map((itm, inde) => (
+                          <Text style={styles.qty} key={inde}>
+                            {itm?.price_slot?.value} {itm?.price_slot?.unit}
+                            {','}
+                          </Text>
+                        ))}
                     </Text>
                     <View
                       style={{
@@ -181,34 +271,26 @@ const Orderview = props => {
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={styles.boxtxt2}>{t('Qty')}</Text>
-                        <Text style={styles.boxtxt2}>
-                          {''} :- {item?.qty}
-                        </Text>
+                        <Text style={styles.boxtxt2}> :- {prod?.qty}</Text>
                       </View>
                       <Text style={styles.boxtxt3}>
-                        {Currency} {item?.price}{' '}
+                        {Currency} {prod?.price}{' '}
                       </Text>
                     </View>
                   </View>
                 </View>
-                <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
-                  {/* <StarRating
-                    rating={item.rating}
-                    enableHalfStar={false}
-                    color={Constants.custom_green}
-                    onChange={() => {}}
-                    onRatingEnd={e => rating(item.id, e)}
-                  /> */}
-                  {!item?.returnDetails?.isRefunded &&
-                    !item?.returnDetails?.isReturned &&
-                    Date.now() - new Date(orderview?.deliveredAt).getTime() <=
-                      15 * 60 * 1000 && (
-                      <Text style={styles.rtnbtn} onPress={()=>{setModalVisible(true),setproductid(item?.product?._id)}}>Return</Text>
-                    )}
-                </View>
+                {/* <View style={{alignSelf: 'center', marginBottom: 5}}>
+                                <StarRating
+                                  rating={prod?.rating}
+                                  enableHalfStar={false}
+                                  color={Constants.violet}
+                                  onChange={() => {}}
+                                  onRatingEnd={e => rating(prod.id, e)}
+                                />
+                              </View> */}
               </View>
-            );
-          })
+            ))}
+          </View>
         ) : (
           <View
             style={{
@@ -219,89 +301,118 @@ const Orderview = props => {
             <Text style={styles.carttxt}>{t('Loading...')}</Text>
           </View>
         )}
-        {orderview?.productDetail && orderview?.productDetail.length > 0 && (
-          <View>
-            <View
-              style={{
-                marginHorizontal: 20,
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                marginTop: 30,
-              }}>
-              <Text style={styles.boxtxt}>{t('Total Amount')}</Text>
-              <Text style={styles.boxtxt}>
-                {Currency} {orderview?.total}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                marginHorizontal: 20,
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                marginVertical: 10,
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.boxtxt}>{t('Tax')}</Text>
-                
-              </View>
-              <Text style={styles.boxtxt}>{Currency} {orderview?.tax}</Text>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 20,
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                marginVertical: 10,
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.boxtxt}>{t('Delivery Fee')}</Text>
-                
-              </View>
-              <Text style={styles.boxtxt}>{Currency} {orderview?.deliveryCharge}</Text>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 20,
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                marginVertical: 10,
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.boxtxt}>{t('Delivery Partner Tip')}</Text>
-                
-              </View>
-              <Text style={styles.boxtxt}>{Currency} {orderview?.deliveryTip}</Text>
-            </View>
-
-            <View style={[styles.box, styles.shadowProp]}>
+        {(orderview?.productDetail || orderview?.comboProductDetail) &&
+          (orderview?.productDetail.length > 0 ||
+            orderview?.comboProductDetail.length > 0) && (
+            <View>
               <View
                 style={{
+                  marginHorizontal: 20,
                   justifyContent: 'space-between',
                   flexDirection: 'row',
-                  flex: 1,
+                  marginTop: 30,
                 }}>
-                <Text style={styles.boxtxt}>{t('Final Amount')}</Text>
+                <Text style={styles.boxtxt}>{t('Total Amount')}</Text>
                 <Text style={styles.boxtxt}>
-                  {Currency}
-                  {Number(orderview?.finalAmount)}
+                  {Currency} {orderview?.total}
                 </Text>
               </View>
+
+              {orderview?.tax > 0 && (
+                <View
+                  style={{
+                    marginHorizontal: 20,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginVertical: 10,
+                  }}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.boxtxt}>{t('Tax')}</Text>
+                  </View>
+                  <Text style={styles.boxtxt}>
+                    {Currency} {orderview?.tax}
+                  </Text>
+                </View>
+              )}
+              {orderview?.servicefee > 0 && (
+                <View
+                  style={{
+                    marginHorizontal: 20,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginVertical: 10,
+                  }}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.boxtxt}>{t('Service Fee')}</Text>
+                  </View>
+                  <Text style={styles.boxtxt}>
+                    {Currency} {orderview?.servicefee}
+                  </Text>
+                </View>
+              )}
+              {orderview?.deliveryCharge > 0 && (
+                <View
+                  style={{
+                    marginHorizontal: 20,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginVertical: 10,
+                  }}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.boxtxt}>{t('Delivery Fee')}</Text>
+                  </View>
+                  <Text style={styles.boxtxt}>
+                    {Currency} {orderview?.deliveryCharge}
+                  </Text>
+                </View>
+              )}
+              {orderview?.deliveryTip > 0 && (
+                <View
+                  style={{
+                    marginHorizontal: 20,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginVertical: 10,
+                  }}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.boxtxt}>
+                      {t('Delivery Partner Tip')}
+                    </Text>
+                  </View>
+                  <Text style={styles.boxtxt}>
+                    {Currency} {orderview?.deliveryTip}
+                  </Text>
+                </View>
+              )}
+
+              <View style={[styles.box, styles.shadowProp]}>
+                <View
+                  style={{
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    flex: 1,
+                  }}>
+                  <Text style={styles.boxtxt}>{t('Final Amount')}</Text>
+                  <Text style={styles.boxtxt}>
+                    {Currency}
+                    {Number(orderview?.finalAmount)}
+                  </Text>
+                </View>
+              </View>
+              {orderview?.onthewaytodelivery && (
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() =>
+                    navigate('TrackDriver', {
+                      driverid: orderview?.driver_id?._id,
+                      userlocation: orderview?.location,
+                    })
+                  }>
+                  <Text style={styles.tracktxt}>Track Driver</Text>
+                </TouchableOpacity>
+              )}
             </View>
-            {orderview?.onthewaytodelivery && (
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() =>
-                  navigate('TrackDriver', {
-                    driverid: orderview?.driver_id?._id,
-                    userlocation: orderview?.location,
-                  })
-                }>
-                <Text style={styles.tracktxt}>Track Driver</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
+          )}
       </ScrollView>
       <Modal
         animationType="none"
@@ -317,7 +428,7 @@ const Orderview = props => {
               style={{
                 backgroundColor: Constants.white,
                 alignItems: 'center',
-                width:'100%'
+                width: '100%',
               }}>
               <CrossIcon
                 style={{
@@ -338,56 +449,66 @@ const Orderview = props => {
                 Return Product
               </Text>
               <TextInput
-                      style={[styles.input]}
-                      placeholder='Reason for return'
-                      placeholderTextColor={Constants.customgrey2}
-                      onChangeText={(e)=>setrtnreason(e)}
-                      value={rtnreason}
-                    />
+                style={[styles.input]}
+                placeholder="Reason for return"
+                placeholderTextColor={Constants.customgrey2}
+                onChangeText={e => setrtnreason(e)}
+                value={rtnreason}
+              />
               <UploadIcon
-                      color={Constants.violet}
-                      height={80}
-                      width={80}
-                      style={{alignSelf:'center'}}
-                      onPress={() => cameraRef.current.show()}
-                    />
-                    <CameraGalleryPeacker
-                      refs={cameraRef}
-                      getImageValue={async img => {
-                        setLoading(true)
-                        ApiFormData(img.assets[0]).then(
-                          res => {
-                            console.log(res);
-                            setLoading(false)
-                            if (res.status) {
-                              setuploadimg(prev => [...prev, res.data.file]);
-                            }
-                          },
-                          err => {
-                            console.log(err);
-                          },
-                        );
-                      }}
-                      base64={false}
-                      cancel={()=>{}}
-                    />
-                <Text style={styles.imgtxt}>
-                  Upload atleast two images
-                </Text>
-                <ScrollView
-                              style={{flexDirection: 'row', gap: 20, marginTop: 10}}
-                              horizontal={true}
-                              showsHorizontalScrollIndicator={false}>
-              {uploadimg.map((item, i) => {
-                return (
-                  <View key={i}>
-                    <Cross2Icon color={Constants.red} height={15} width={15} style={{position:'absolute',zIndex:10,right:0}} onPress={()=>setuploadimg((prev) => prev.filter((it) => it !== item))}/>
-                    <Image source={{uri:item}} style={styles.imgcov} resizeMode='contain' />
+                color={Constants.violet}
+                height={80}
+                width={80}
+                style={{alignSelf: 'center'}}
+                onPress={() => cameraRef.current.show()}
+              />
+              <CameraGalleryPeacker
+                refs={cameraRef}
+                getImageValue={async img => {
+                  setLoading(true);
+                  ApiFormData(img.assets[0]).then(
+                    res => {
+                      console.log(res);
+                      setLoading(false);
+                      if (res.status) {
+                        setuploadimg(prev => [...prev, res.data.file]);
+                      }
+                    },
+                    err => {
+                      console.log(err);
+                    },
+                  );
+                }}
+                base64={false}
+                cancel={() => {}}
+              />
+              <Text style={styles.imgtxt}>Upload atleast two images</Text>
+              <ScrollView
+                style={{flexDirection: 'row', gap: 20, marginTop: 10}}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {uploadimg.map((item, i) => {
+                  return (
+                    <View key={i}>
+                      <Cross2Icon
+                        color={Constants.red}
+                        height={15}
+                        width={15}
+                        style={{position: 'absolute', zIndex: 10, right: 0}}
+                        onPress={() =>
+                          setuploadimg(prev => prev.filter(it => it !== item))
+                        }
+                      />
+                      <Image
+                        source={{uri: item}}
+                        style={styles.imgcov}
+                        resizeMode="contain"
+                      />
                     </View>
-                );
-              })}
+                  );
+                })}
               </ScrollView>
-              
+
               {/* <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.addcov}
@@ -442,13 +563,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Bold,
     alignSelf: 'center',
   },
-   secendboldtxt: {
+  secendboldtxt: {
     color: Constants.black,
     fontSize: 16,
     fontFamily: FONTS.Bold,
     alignSelf: 'center',
   },
-   secendboldtxt2: {
+  secendboldtxt2: {
     color: Constants.black,
     fontSize: 16,
     fontFamily: FONTS.Medium,
@@ -594,7 +715,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     position: 'relative',
-    width:'85%'
+    width: '85%',
   },
 
   textStyle: {
@@ -603,7 +724,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: FONTS.Bold,
     fontSize: 16,
-    marginVertical:10
+    marginVertical: 10,
   },
   imgtxt: {
     color: Constants.customgrey,
@@ -644,24 +765,24 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   textInput: {
-   flexDirection:'row'
+    flexDirection: 'row',
   },
-  imgcov:{
-    height:50,
-    width:50,
-    marginHorizontal:5
+  imgcov: {
+    height: 50,
+    width: 50,
+    marginHorizontal: 5,
   },
   input: {
     paddingLeft: 10,
     fontSize: 14,
     fontFamily: FONTS.Medium,
     color: Constants.black,
-    height:60,
-    width:'100%',
-    backgroundColor:Constants.customgrey4,
-    borderRadius:15,
-    fontSize:14,
-    fontFamily:FONTS.Medium,
+    height: 60,
+    width: '100%',
+    backgroundColor: Constants.customgrey4,
+    borderRadius: 15,
+    fontSize: 14,
+    fontFamily: FONTS.Medium,
     // borderWidth:1,
     // borderColor:Constants.violet
   },

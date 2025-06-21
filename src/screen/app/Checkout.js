@@ -81,20 +81,41 @@ const Checkout = props => {
       : null;
   const submit = () => {
     setLoading(true)
-    let newarr = cartdetail.map(item => {
-      return {
-        product: item.productid,
+    let newarr=[]; 
+    let comboProductDetail = [];
+
+     cartdetail.map(item => {
+    if (item.type === "combo") {
+        comboProductDetail.push({
+          comboId: item.productid,
+          qty: item.qty,
+          price: item.price,
+          total: item.offer,
+          comboItems: item.comboItems.map((it) => ({
+            product: it.product._id,
+            seller_id: item.seller_id,
+            qty: it.qty || 1,
+            price: it.selected_slot.our_price,
+            price_slot: it.selected_slot,
+          })),
+        });
+      } else {
+        newarr.push({
+          product: item.productid,
         image: item.image,
         productname: item.productname,
         price: item.offer,
+        total: item.offer,
         qty: item.qty,
         seller_id: item.seller_id,
         price_slot: item.price_slot,
-      };
-    });
+        });
+      }
+     })
 
     const data = {
       productDetail: newarr,
+      comboProductDetail: comboProductDetail,
       shipping_address: user.shipping_address,
       location: user.shipping_address.location,
       total: sumdata,
@@ -368,6 +389,12 @@ const Checkout = props => {
                 </View>
                 <Text style={styles.boxtxt}>{Currency} {propdata?.tax}</Text>
               </View>}
+              {propdata?.servicefee > 0 && <View style={styles.amountlist}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.boxtxt}>{t('Service Fee')}</Text>
+                </View>
+                <Text style={styles.boxtxt}>{Currency} {propdata?.servicefee}</Text>
+              </View>}
               <View style={styles.amountlist}>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.boxtxt}>{t('Delivery Fee')}</Text>
@@ -413,7 +440,8 @@ const Checkout = props => {
                   Number(propdata?.deliveryfee) +
                   Number(propdata?.deliveryPartnerTip)
                   : Number(sumdata) + (propdata?.taxrate > 0 ? (Number(sumdata) * propdata?.taxrate) / 100 : 0) +
-                  Number(propdata?.deliveryfee) +
+                  Number(propdata?.deliveryfee)+
+                  (propdata?.servicefee > 0 ? propdata?.servicefee : 0) +
                   Number(propdata?.deliveryPartnerTip)}
               </Text>
             </View>
