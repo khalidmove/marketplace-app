@@ -1,6 +1,6 @@
-// const prodUrl = 'https://marketapi.moveex.co/v1/api/';
+const prodUrl = 'https://marketapi.moveex.co/v1/api/';
 // const prodUrl = 'http://192.168.81.47:3000/v1/api/';
-const prodUrl = 'http://192.168.0.187:3000/v1/api/';
+// const prodUrl = 'http://192.168.0.187:3000/v1/api/';
 
 let apiUrl = prodUrl;
 export const Googlekey = 'AIzaSyDHd5FoyP2sDBo0vO2i0Zq7TIUZ_7GhBcI'

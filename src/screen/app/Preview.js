@@ -2,6 +2,7 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -14,7 +15,7 @@ import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import Constants, {Currency, FONTS} from '../../Assets/Helpers/constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CartContext, LoadContext, ToastContext} from '../../../App';
-import {CartIcon, MinusIcon, Plus2Icon} from '../../../Theme';
+import {CartIcon, Cross2Icon, CrossIcon, MinusIcon, Plus2Icon} from '../../../Theme';
 import Header from '../../Assets/Component/Header';
 import {navigate} from '../../../navigationRef';
 import {GetApi} from '../../Assets/Helpers/Service';
@@ -36,6 +37,8 @@ const Preview = props => {
   const [combolist, setcombolist] = useState([]);
   const [isInCart, setIsInCart] = useState(false);
   const [availableQty, setAvailableQty] = useState(0);
+  const [image, setimage] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const sumdata =
     cartdetail && cartdetail.length > 0
@@ -253,7 +256,8 @@ const Preview = props => {
             //   </View>
             // )}
             renderItem={({item, index}) => (
-              <View
+              <TouchableOpacity
+              onPress={() => {setimage(item),setModalVisible(true)}}
                 style={{paddingBottom: 35, width: width, alignItems: 'center'}}>
                 <Image
                   source={{uri: `${item}`}}
@@ -268,7 +272,7 @@ const Preview = props => {
                   resizeMode="stretch"
                   key={index}
                 />
-              </View>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -559,6 +563,43 @@ const Preview = props => {
           </View>
         </TouchableOpacity>
       )}
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={[styles.modalView2]}>
+            {/* <View
+              style={{
+                backgroundColor: Constants.white,
+                alignItems: 'center',
+                width:'100%'
+              }}> */}
+            <Cross2Icon
+              style={{
+                alignSelf: 'flex-end',
+                position: 'absolute',
+                top: -40,
+                right: -10,
+              }}
+              height={30}
+              width={30}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+              color={Constants.red}
+            />
+            <View style={{ height: '100%', width: '100%', }}>
+              <Image source={{ uri: image }} style={{ height: '100%', width: '100%', }} />
+            </View>
+          </View>
+          {/* </View> */}
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -821,5 +862,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     overflow: 'visible', // still needed if your child extends outside
     backgroundColor: 'transparent', // make sure this doesn't override shadow
+  },
+   //////model///
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginTop: 22,
+    backgroundColor: '#rgba(0, 0, 0, 0.5)',
+  },
+  modalView2: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    // paddingVertical: 10,
+    alignItems: 'center',
+    width: '95%',
+    height: '70%',
+    marginTop: 20
   },
 });

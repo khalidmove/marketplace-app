@@ -122,13 +122,14 @@ const Checkout = props => {
       paymentmode: jobtype,
       timeslot: selectedTime,
       deliveryCharge:propdata?.deliveryfee > 0 ? propdata?.deliveryfee : 0,
-      deliveryTip:propdata?.deliveryPartnerTip>0?propdata?.deliveryPartnerTip:0
+      // deliveryTip:propdata?.deliveryPartnerTip>0?propdata?.deliveryPartnerTip:0
     };
     if (user?._id) {
       data.user = user._id;
     }
     if (pointtype === 'REDEEM') {
-      data.point = Math.floor(pointamount / 1000) * 1000;
+      data.point = Math.floor(pointamount );
+      // data.point = Math.floor(pointamount / 1000) * 1000;
       data.pointtype = 'REDEEM';
     }
 
@@ -321,7 +322,7 @@ const Checkout = props => {
               <Text style={styles.boxtxt}>{pointamount} {t('point')}</Text>
             </View>
           </View>
-          {pointamount > 25000 ? (
+          {pointamount > 250 ? (
             <View style={styles.totalpointcov}>
               {pointtype === 'EARN' ? (
                 <CheckboxIcon
@@ -330,7 +331,8 @@ const Checkout = props => {
                   width={20}
                   onPress={() => {
                     if (
-                      ((Math.floor(pointamount / 1000) * 1000) / 1000) >
+                      pointamount >
+                      // ((Math.floor(pointamount / 1000) * 1000) / 1000) >
                       (sumdata + 20)
                     ) {
                       setlessamount(true);
@@ -357,14 +359,15 @@ const Checkout = props => {
                   color={Constants.pink}
                 />
                 <Text style={styles.boxtxt}>
-                  {Math.floor(pointamount / 1000) * 1000} {t('point')}
+                  {pointamount}{t('point')}
+                  {/* {Math.floor(pointamount / 1000) * 1000} {t('point')} */}
                 </Text>
               </View>
             </View>
           ) : (
             <View style={styles.totalpointcov}>
               <Text style={[styles.boxtxt, { color: Constants.violet }]}>
-                {t('Minimum 25,000 points required to redeem.')}
+                {t('Minimum 250 points required to redeem.')}
               </Text>
             </View>
           )}
@@ -401,19 +404,20 @@ const Checkout = props => {
                 </View>
                 <Text style={styles.boxtxt}>{Currency} {propdata?.deliveryfee > 0 ? propdata?.deliveryfee : 0}</Text>
               </View>
-              {propdata?.deliveryPartnerTip > 0 && <View style={styles.amountlist}>
+              {/* {propdata?.deliveryPartnerTip > 0 && <View style={styles.amountlist}>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.boxtxt}>{t('Delivery Partner Tip')}</Text>
                 </View>
                 <Text style={styles.boxtxt}>{Currency} {propdata?.deliveryPartnerTip}</Text>
-              </View>}
+              </View>} */}
               {pointtype === 'REDEEM' && (
                 <View style={styles.amountlist}>
                   <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.boxtxt}>{t('Discount')}</Text>
                   </View>
                   <Text style={styles.boxtxt}>
-                    - {Currency} {(Math.floor(pointamount / 1000) * 1000) / 1000}
+                    - {Currency} {pointamount}
+                    {/* - {Currency} {(Math.floor(pointamount / 1000) * 1000) / 1000} */}
                   </Text>
                 </View>
               )}
@@ -436,13 +440,14 @@ const Checkout = props => {
                 {Currency}{' '}
                 {pointtype === 'REDEEM'
                   ? Number(sumdata) -
-                  (Math.floor(pointamount / 1000) * 1000) / 1000 + (propdata?.taxrate > 0 ? (Number(sumdata) * propdata?.taxrate) / 100 : 0) +
-                  Number(propdata?.deliveryfee) +
-                  Number(propdata?.deliveryPartnerTip)
+                  pointamount + (propdata?.taxrate > 0 ? (Number(sumdata) * propdata?.taxrate) / 100 : 0) +
+                  Number(propdata?.deliveryfee) 
+                  // +Number(propdata?.deliveryPartnerTip)
                   : Number(sumdata) + (propdata?.taxrate > 0 ? (Number(sumdata) * propdata?.taxrate) / 100 : 0) +
                   Number(propdata?.deliveryfee)+
-                  (propdata?.servicefee > 0 ? propdata?.servicefee : 0) +
-                  Number(propdata?.deliveryPartnerTip)}
+                  (propdata?.servicefee > 0 ? propdata?.servicefee : 0) 
+                  // +Number(propdata?.deliveryPartnerTip)
+                  }
               </Text>
             </View>
           </View>

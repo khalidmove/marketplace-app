@@ -42,16 +42,16 @@ const Cart = () => {
   const shaloowarray = [...cartdetail];
 
    const IsFocused = useIsFocused();
-    useEffect(() => {
-      if (IsFocused) {
-      }
-      else{
-        setSelTips(null)
-      }
-    }, [IsFocused]);
+    // useEffect(() => {
+    //   if (IsFocused) {
+    //   }
+    //   else{
+    //     setSelTips(null)
+    //   }
+    // }, [IsFocused]);
 
   useEffect(() => {
-    getDeliveryPartnerTip();
+    // getDeliveryPartnerTip();
     getDeliveryCharge();
     getTax();
     getserviceFee();
@@ -405,13 +405,10 @@ const Cart = () => {
                 <Text style={styles.boxtxt}>{Currency}{deliveryfee?deliveryfee:0}</Text>
               </View>
             </View>
-            <View style={styles.total}>
+            {/* <View style={styles.total}>
               <Text style={[styles.boxtxt, { color: seltips ? Constants.black : Constants.customgrey }]}>
                 {t('Delivery Partner Tip')}
               </Text>
-              {/* <Text style={[styles.boxtxt2, { textDecorationLine: 'none' }]}>
-                {Currency}0
-              </Text> */}
               <View style={{ width: 100 }}>
                 <Dropdown
                   ref={dropdownRef}
@@ -437,8 +434,8 @@ const Cart = () => {
                   selectedTextStyle={styles.selectedText}
                 />
               </View>
-            </View>
-            {seltips&&<Text style={styles.clear} onPress={()=>setSelTips(null)}>Clear</Text>}
+            </View> */}
+            {/* {seltips&&<Text style={styles.clear} onPress={()=>setSelTips(null)}>Clear</Text>} */}
             <View style={styles.line}></View>
             <View style={styles.total}>
               <Text style={[styles.boxtxt, { fontFamily: FONTS.Bold }]}>
