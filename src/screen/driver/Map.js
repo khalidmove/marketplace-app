@@ -312,12 +312,13 @@ const Map = props => {
         setLoading(false);
         if (res.status) {
         console.log(res);
-        setToast('Job Completed');
+        // setToast('Job Completed');
         setuploadimg([{imgname: ''}]);
-        setModalVisible6(false);
-        MyOrders()
+        // setModalVisible6(false);
+        // MyOrders()
         setSubmitted(false);
         setcheakimg('');
+        goBack()
         }
       },
       err => {
@@ -736,10 +737,10 @@ const Map = props => {
           </View>
         </View>
       </Modal>
-      <Modal
+      {modalVisible6&&<Modal
         animationType="none"
         transparent={true}
-        visible={modalVisible6}
+        // visible={modalVisible6}
         onRequestClose={() => {
           // Alert.alert('Modal has been closed.');
           setModalVisible6(!modalVisible6);
@@ -840,14 +841,14 @@ const Map = props => {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   style={styles.logOutButtonStyle}
-                  onPress={() => completeride(orderdetail._id)}>
+                  onPress={() => {setModalVisible6(false),completeride(orderdetail._id)}}>
                   <Text style={styles.modalText}>Submit</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal>}
     </SafeAreaView>
   );
 };

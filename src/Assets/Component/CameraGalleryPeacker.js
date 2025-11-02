@@ -62,6 +62,7 @@ const CameraGalleryPeacker = (props) => {
     //     alert(e);
     //   });
     launchCamera(options2, (response) => {
+      console.log(response)
       if (response.didCancel) {
         props?.cancel()
         console.log('User cancelled image picker');
@@ -74,6 +75,7 @@ const CameraGalleryPeacker = (props) => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         const source = { uri: response.uri };
+        onCancel()
         props.getImageValue(response);
         // setSelectedImage(source);
       }
@@ -130,6 +132,9 @@ const CameraGalleryPeacker = (props) => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         const source = { uri: response.uri };
+      setTimeout(() => {
+        props.refs.current?.hide()
+      }, 100);
         props.getImageValue(response);
         // setSelectedImage(source);
       }
@@ -167,36 +172,33 @@ const CameraGalleryPeacker = (props) => {
   //   }
   // };
 
-  const requestMediaPermission = async (type) => {
+  const requestMediaPermission = async (type, permission) => {
+    // props.refs.current?.hide();
     try {
-      // Specify the permission you want to request
-      const permission = Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.PHOTO_LIBRARY
-        : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
-
-      // Check the current status of the permission
       const result = await check(permission);
-      // const result2 = await check(PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-      // If permission is already granted, do nothing
+
       if (result === RESULTS.GRANTED) {
-        type()
+
+        setTimeout(() => {
+          type();
+        }, 500);
+
         console.log('Permission already granted');
         return;
       }
 
-      // If permission is denied or undetermined, request permission
       if (result === RESULTS.DENIED || result === RESULTS.UNAVAILABLE) {
         const permissionResult = await request(permission);
-
-        // Handle the permission result
+        console.log(permissionResult)
         if (permissionResult === RESULTS.GRANTED) {
           console.log('Permission granted');
-          type()
-          // You can now access the media
+   
+setTimeout(() => {
+  type();
+}, 500);
         } else {
           console.log('Permission denied');
-          type()
-          // Handle the denial of permission
+
         }
       }
     } catch (error) {
@@ -205,13 +207,18 @@ const CameraGalleryPeacker = (props) => {
   };
 
 
+  const onCancel = () => {
+    if (props?.cancel !== undefined) {
+      props?.cancel();
+      props.refs.current?.hide();
+    }
+  };
+
   return (
     <ActionSheet
       ref={props.refs}
       closeOnTouchBackdrop={false}
-      onNavigateBack={() => {
-        props.cancel()
-      }}
+      closeOnPressBack={false}
       containerStyle={{ backgroundColor: props.backgroundColor }}>
       <View style={{ paddingHorizontal: 20, paddingVertical: 30 }}>
         <View style={{ marginLeft: 10 }}>
@@ -228,10 +235,14 @@ const CameraGalleryPeacker = (props) => {
         <TouchableOpacity
           style={{ flexDirection: 'row', width: '100%' }}
           onPress={() => {
-            requestMediaPermission(launchCameras);
-            // launchCameras();
+            // const permission =
+            //   Platform.OS === 'ios'
+            //     ? PERMISSIONS.IOS.CAMERA
+            //     : PERMISSIONS.ANDROID.CAMERA;
+            // requestMediaPermission(launchCameras, permission);
+            Platform.OS === 'ios' ? requestMediaPermission(launchCameras, PERMISSIONS.IOS.CAMERA) : launchCameras()
 
-            props.refs.current?.hide();
+
           }}>
           <View style={{ marginLeft: 10 }}>
             <Text
@@ -246,12 +257,17 @@ const CameraGalleryPeacker = (props) => {
           </View>
         </TouchableOpacity>
 
-        {props.hidegallaryoption?null:<TouchableOpacity
+        <TouchableOpacity
           style={{ flexDirection: 'row', marginTop: 10 }}
           onPress={() => {
-            requestMediaPermission(launchImageLibrarys);
+            // const permission =
+            //   Platform.OS === 'ios'
+            //     ? PERMISSIONS.IOS.PHOTO_LIBRARY
+            //     : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
+            // requestMediaPermission(launchImageLibrarys, permission);
+            Platform.OS === 'ios' ? requestMediaPermission(launchImageLibrarys, PERMISSIONS.IOS.PHOTO_LIBRARY) : launchImageLibrarys()
             // launchImageLibrarys();
-            props.refs.current?.hide();
+
           }}>
           <View style={{ marginLeft: 10 }}>
             <Text
@@ -264,7 +280,7 @@ const CameraGalleryPeacker = (props) => {
               Choose from gallery
             </Text>
           </View>
-        </TouchableOpacity>}
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={{
@@ -273,7 +289,7 @@ const CameraGalleryPeacker = (props) => {
             alignItems: 'flex-end',
           }}
           onPress={() => {
-            props?.cancel()
+            onCancel();
             props.refs.current?.hide();
           }}>
           <View style={{ marginLeft: 10, width: '100%' }}>

@@ -202,40 +202,24 @@ const Myorder = () => {
             <TouchableOpacity
               style={styles.card}
               onPress={() => navigate('Orderview', {id: item?._id})}>
-              <View style={{flexDirection: 'row', marginBottom: 10}}>
+              <View style={{flexDirection: 'row', marginBottom: 10,alignItems:'center'}}>
                 <View style={{flexDirection: 'row', flex: 1}}>
                   <View style={styles.ordiccov}>
                     <OrderIcon />
                   </View>
-                  <View
-                    style={{
-                      marginLeft: 10,
-                      flex: 1,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
+                  <View style={{flex:1,marginLeft: 10,}}>
+                  <Text>
                     <Text style={styles.txt1}>{t('Date')}</Text>
                     <Text style={styles.txt1}>
                       :- {moment(item?.createdAt).format('DD MMM, hh:mm A')}
                     </Text>
-                  </View>
+                  </Text>
+                    <Text style={styles.txt1}>
+                      {item?.orderId}
+                    </Text>
+                    </View>
                 </View>
                 <View>
-                  {/* {item?.is_favorite == 0 ? (
-                      <TouchableOpacity onPress={() => setfavorite(item?.id)}>
-                        <Image
-                          source={require('../../Assets/Images/love.png')}
-                          style={{height: 20, width: 20, alignSelf: 'center'}}
-                        />
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity onPress={() => setfavorite(item?.id)}>
-                        <Image
-                          source={require('../../Assets/Images/favorite.png')}
-                          style={{height: 20, width: 20, alignSelf: 'center'}}
-                        />
-                      </TouchableOpacity>
-                    )} */}
                   <Text style={styles.delevered}>{item?.status}</Text>
                 </View>
               </View>
@@ -427,7 +411,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: FONTS.Medium,
     // flex: 1,
-    marginVertical: 5,
+    // marginVertical: 5,
   },
   txt3: {
     color: Constants.black,

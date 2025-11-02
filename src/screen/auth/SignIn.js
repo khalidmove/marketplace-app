@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, { createRef, useContext, useEffect, useState } from 'react';
 import styles from './styles';
@@ -144,6 +145,10 @@ const SignIn = props => {
   };
   return (
     <SafeAreaView style={styles.container} >
+    <KeyboardAvoidingView 
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{flex:1}}
+            >
       <ScrollView style={[styles.container,{padding:Platform.OS==='ios'?20: 0}]} showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           style={[styles.langView, { borderColor: Constants.black }]}
@@ -236,6 +241,7 @@ const SignIn = props => {
         </View>
         <LanguageChange refs={langRef} selLang={(item)=>{setSelectLanguage(item)}}/>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

@@ -165,10 +165,10 @@ import { useTranslation } from 'react-i18next';
             setEdit(false);
             setToast(res.data.message);
             await AsyncStorage.setItem(
-              'userDetail', JSON.stringify(res.data),
+              'userDetail', JSON.stringify(res.data?.data),
             );
-            setuser(res.data)
-            getProfile();
+            setuser(res.data?.data)
+            goBack();
           } else {
           }
         },

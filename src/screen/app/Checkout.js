@@ -243,8 +243,8 @@ const Checkout = props => {
             <View style={{ marginLeft: 10 }}>
               <Text style={styles.boxtxt}>{user?.username}</Text>
               <Text style={styles.boxtxt} numberOfLines={1}>
-                {user?.shipping_address.house_no},{' '}
-                {user?.shipping_address.address}
+                {user?.shipping_address?.house_no},{' '}
+                {user?.shipping_address?.address}
               </Text>
             </View>
           </View>

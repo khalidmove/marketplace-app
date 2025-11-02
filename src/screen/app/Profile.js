@@ -144,9 +144,9 @@ const Profile = props => {
           setToast(res.data.message);
 
           await AsyncStorage.setItem(
-            'userDetail', JSON.stringify(res.data),
+            'userDetail', JSON.stringify(res.data?.data),
           );
-          setuser(res.data)
+          setuser(res.data?.data)
 
           if (res.data?.otp) {
             setotpfield(true);
@@ -154,8 +154,8 @@ const Profile = props => {
           } else {
             setEdit(false);
             setotpfield(false);
-            getProfile();
             setotpval({otp: ''});
+            goBack();
           }
         } else {
           setToast(res.message);

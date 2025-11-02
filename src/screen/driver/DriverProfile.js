@@ -211,10 +211,10 @@ const DriverProfile = props => {
         if (res.status) {
           setEdit(false)
           await AsyncStorage.setItem(
-            'userDetail', JSON.stringify(res.data),
+            'userDetail', JSON.stringify(res?.data?.data),
           );
-          setuser(res.data)
-          getProfile();
+          setuser(res?.data?.data)
+          goBack();
         } else {
           setToast(res?.message);
         }
