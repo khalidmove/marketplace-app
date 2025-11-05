@@ -192,7 +192,7 @@ const App = () => {
     }
   };
 
-  const APP_ID = '6a3654fb-e809-476d-a0e2-f90e732dcda1';
+  const APP_ID = '774b33c2-4f75-41a6-8d80-db56398c12e0';
   useEffect(() => {
     OneSignal.initialize(APP_ID);
     OneSignal.Notifications.requestPermission(true);

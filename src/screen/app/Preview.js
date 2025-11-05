@@ -121,22 +121,17 @@ const Preview = props => {
   console.log('currentproduct', currentproduct);
 
   const cartdata = async () => {
+  const existingCart = Array.isArray(cartdetail) ? cartdetail : [];
 
-    const existingCart = Array.isArray(cartdetail) ? cartdetail : [];
+  // Check if cart already has items
+  if (existingCart.length > 0) {
+    const currentSellerId = existingCart[0].seller_id;
 
-    // Check if the exact product with selected price_slot exists
-    const existingProduct = existingCart.find(
-      f =>
-        f.productid === productdata._id &&
-        f.price_slot?.value === selectedslot?.value,
-    );
+    // If trying to add a product from a different seller
+    if (productdata.userid !== currentSellerId) {
+      console.log("Different seller detected, clearing cart...");
 
-    if (!existingProduct) {
       const newProduct = {
-        // ...productdata,
-        // qty: availableQty || 1,
-        // price: selectedslot.our_price,
-        // price_slot: selectedslot,
         productid: productdata._id,
         productname: productdata.name,
         price: selectedslot.other_price,
@@ -147,27 +142,53 @@ const Preview = props => {
         seller_id: productdata.userid,
       };
 
-      const updatedCart = [...existingCart, newProduct];
+      const updatedCart = [newProduct];
       setcartdetail(updatedCart);
-      await AsyncStorage.setItem('cartdata', JSON.stringify(updatedCart));
-      console.log('Product added to cart:', newProduct);
-    } else {
-      console.log(
-        'Product already in cart with this price slot:',
-        existingProduct,
-      );
+      await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+      setToast("New product added (previous seller's cart cleared)");
+      return; // Stop execution here
     }
-  };
-  const handleAddToCart = async(item) => {
-    setcartdetail((prevCartData) => {
-      const existingItem = prevCartData.find((f) => f.productid === item?._id);
+  }
 
-      if (!existingItem) {
+  // Check if same product & slot already exists
+  const existingProduct = existingCart.find(
+    f =>
+      f.productid === productdata._id &&
+      f.price_slot?.value === selectedslot?.value
+  );
+
+  if (!existingProduct) {
+    const newProduct = {
+      productid: productdata._id,
+      productname: productdata.name,
+      price: selectedslot.other_price,
+      offer: selectedslot.our_price,
+      price_slot: selectedslot,
+      image: productdata.varients[0].image[0],
+      qty: 1,
+      seller_id: productdata.userid,
+    };
+
+    const updatedCart = [...existingCart, newProduct];
+    setcartdetail(updatedCart);
+    await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+    console.log("Product added to cart:", newProduct);
+  } else {
+    console.log("Product already in cart with this price slot:", existingProduct);
+  }
+};
+
+  const handleAddToCart = async (item) => {
+  setcartdetail(async(prevCartData) => {
+    // Check for different seller
+    if (prevCartData.length > 0) {
+      const currentSellerId = prevCartData[0].seller_id;
+      if (item?.userid?._id !== currentSellerId) {
+        console.log("Different seller detected, clearing cart...");
+
         const newItem = {
-          productid: item._id, // Unique combo ID
-          productname: item.comboItems
-            .map((comboItem) => comboItem?.product?.name)
-            .join(", "),
+          productid: item._id,
+          productname: item.comboItems.map(ci => ci?.product?.name).join(", "),
           comboItems: item.comboItems,
           qty: 1,
           offer: Number(item.offer_price.toFixed(2)),
@@ -179,25 +200,46 @@ const Preview = props => {
           seller_id: item?.userid?._id,
         };
 
-        const updatedCart = [...prevCartData, newItem];
-        AsyncStorage.setItem('cartdata', JSON.stringify(updatedCart));
+        const updatedCart = [newItem];
+        await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+        setToast("New combo added (previous seller's cart cleared)");
         return updatedCart;
-      }else{
-         const updatedCart = prevCartData.map((_i) => {
-        if (_i.productid === item._id) {
-          return { ..._i, qty: _i.qty + 1 };
-        } else {
-          return _i;
-        }
-      });
-
-      AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
-      return updatedCart;
       }
-    });
+    }
 
-    setToast("Combo added to cart");
-  };
+    // Same seller — add or increase qty
+    const existingItem = prevCartData.find((f) => f.productid === item?._id);
+
+    if (!existingItem) {
+      const newItem = {
+        productid: item._id,
+        productname: item.comboItems.map(ci => ci?.product?.name).join(", "),
+        comboItems: item.comboItems,
+        qty: 1,
+        offer: Number(item.offer_price.toFixed(2)),
+        type: "combo",
+        image:
+          item.comboItems?.[0]?.product?.varients?.[0]?.image?.[0] ||
+          "https://cdn.pixabay.com/photo/2022/08/22/21/58/grocery-7404621_640.png",
+        price: item.old_price,
+        seller_id: item?.userid?._id,
+      };
+
+      const updatedCart = [...prevCartData, newItem];
+      await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+      return updatedCart;
+    } else {
+      const updatedCart = prevCartData.map((_i) =>
+        _i.productid === item._id ? { ..._i, qty: _i.qty + 1 } : _i
+      );
+
+      await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+      return updatedCart;
+    }
+  });
+
+  setToast("Combo added to cart");
+};
 
   const formatPricePerUnit = (price, quantity, unit) => {
     let unitText = '';

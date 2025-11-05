@@ -132,91 +132,75 @@ const Home = () => {
   };
   const cartdata = async (productdata) => {
 
-    // let data = {
-    //   productid: productdata._id,
-    //   productname: productdata.name,
-    //   price: productdata?.price_slot[0]?.other_price,
-    //   offer: productdata?.price_slot[0]?.our_price,
-    //   image:productdata.varients[0].image[0],
-    //   price_slot:productdata?.price_slot[0],
-    //   qty: 1,
-    //   seller_id:productdata.userid
-    // };
-    // console.log('data', data);
-    // if (cartdetail) {
-    //   let alreadyexsit =
-    //     cartdetail &&
-    //     cartdetail.length > 0 &&
-    //     cartdetail.filter(it => it.productid === data.productid).length > 0;
-    //   let stringdata;
-    //   if (alreadyexsit) {
-    //     stringdata = cartdetail.map(_i => {
-    //       if (_i?.productid == data.productid) {
-    //         return {..._i, qty: _i?.qty + 1};
-    //       } else {
-    //         return _i;
-    //       }
-    //     });
-    //   } else {
-    //     stringdata = [...cartdetail, data];
+   const existingCart = Array.isArray(cartdetail) ? cartdetail : [];
 
-    //   }
-    //   console.log('stringdata', stringdata);
-    //   setcartdetail(stringdata);
-    //   await AsyncStorage.setItem('cartdata', JSON.stringify(stringdata));
-    // } else {
-    //   let stringdata = [data];
+// Check if the cart already has items
+if (existingCart.length > 0) {
+  const currentSellerId = existingCart[0].seller_id;
 
-    //   console.log('stringdata', stringdata);
-    //   setcartdetail(stringdata);
-    //   await AsyncStorage.setItem('cartdata', JSON.stringify(stringdata));
-    // }
-    const existingCart = Array.isArray(cartdetail)
-      ? cartdetail
-      : [];
+  // If trying to add a product from a different seller
+  if (productdata.userid !== currentSellerId) {
+    console.log("Different seller detected, clearing cart...");
 
-    // Check if the exact product with selected price_slot exists
-    const existingProduct = existingCart.find(
-      (f) =>
-        f.productid === productdata._id &&
-        f.price_slot?.value === productdata?.price_slot[0]?.value
-    );
+    // 🧹 Clear old cart and add new item
+    const newProduct = {
+      productid: productdata._id,
+      productname: productdata.name,
+      price: productdata?.price_slot[0]?.other_price,
+      offer: productdata?.price_slot[0]?.our_price,
+      image: productdata.varients[0].image[0],
+      price_slot: productdata?.price_slot[0],
+      qty: 1,
+      seller_id: productdata.userid,
+    };
 
-    if (!existingProduct) {
-      const newProduct = {
-        productid: productdata._id,
-        productname: productdata.name,
-        price: productdata?.price_slot[0]?.other_price,
-        offer: productdata?.price_slot[0]?.our_price,
-        image: productdata.varients[0].image[0],
-        price_slot: productdata?.price_slot[0],
-        qty: 1,
-        seller_id: productdata.userid
-      };
+    const updatedCart = [newProduct];
+    setcartdetail(updatedCart);
+    await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+    setToast("New product added (previous seller's cart cleared)");
+    console.log("New product added after clearing cart:", newProduct);
+    return;
+  }
+}
 
-      const updatedCart = [...existingCart, newProduct];
-      setcartdetail(updatedCart);
-      await AsyncStorage.setItem('cartdata', JSON.stringify(updatedCart))
-      console.log("Product added to cart:", newProduct);
-    } else {
-      console.log(
-        "Product already in cart with this price slot:",
-        existingProduct
-      );
-      let stringdata = cartdetail.map(_i => {
-        if (_i?.productid == productdata._id) {
-          console.log('enter')
-          return { ..._i, qty: _i?.qty + 1 };
-        } else {
-          return _i;
-        }
-      });
-      console.log(stringdata)
-      setcartdetail(stringdata);
-      await AsyncStorage.setItem('cartdata', JSON.stringify(stringdata))
+// Same seller or empty cart
+const existingProduct = existingCart.find(
+  (f) =>
+    f.productid === productdata._id &&
+    f.price_slot?.value === productdata?.price_slot[0]?.value
+);
+
+if (!existingProduct) {
+  const newProduct = {
+    productid: productdata._id,
+    productname: productdata.name,
+    price: productdata?.price_slot[0]?.other_price,
+    offer: productdata?.price_slot[0]?.our_price,
+    image: productdata.varients[0].image[0],
+    price_slot: productdata?.price_slot[0],
+    qty: 1,
+    seller_id: productdata.userid,
+  };
+
+  const updatedCart = [...existingCart, newProduct];
+  setcartdetail(updatedCart);
+  await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+  setToast("Product added to cart successfully");
+  console.log("Product added to cart:", newProduct);
+} else {
+  const updatedCart = cartdetail.map((item) => {
+    if (item.productid === productdata._id) {
+      return { ...item, qty: item.qty + 1 };
     }
-    setToast("Successfully added to cart.")
-    // navigate('Cart');
+    return item;
+  });
+
+  setcartdetail(updatedCart);
+  await AsyncStorage.setItem("cartdata", JSON.stringify(updatedCart));
+  setToast("Product quantity increased");
+  console.log("Product quantity updated:", existingProduct);
+}
+
   };
   const width = Dimensions.get('window').width;
   const width2 = Dimensions.get('window').width - 30;
