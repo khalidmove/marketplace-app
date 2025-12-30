@@ -21,7 +21,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { OneSignal } from 'react-native-onesignal';
 import { checkEmail } from '../../Assets/Helpers/InputsNullChecker';
 import { CrossIcon, Downarrow, RadiooffIcon, RadioonIcon } from '../../../Theme';
-import ActionSheet from 'react-native-actions-sheet';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../i18n';
 import LanguageChange from '../../Assets/Component/LanguageChange';
@@ -39,7 +38,7 @@ const SignIn = props => {
   });
   const [selectLanguage, setSelectLanguage] = useState('English');
   const { t } = useTranslation();
-  const langRef = createRef()
+  const [showLanguage, setShowLanguage] = useState(false);
 
   useEffect(() => {
     checkLng();
@@ -152,7 +151,7 @@ const SignIn = props => {
       <ScrollView style={[styles.container,{padding:Platform.OS==='ios'?20: 0}]} showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           style={[styles.langView, { borderColor: Constants.black }]}
-          onPress={() => langRef.current.show()}>
+          onPress={() => setShowLanguage(true)}>
           <Text style={[styles.lang, { color: Constants.black }]}>{selectLanguage}</Text>
           <Downarrow height={15} width={15} color={Constants.black} />
         </TouchableOpacity>
@@ -239,7 +238,7 @@ const SignIn = props => {
             </TouchableOpacity>
           </View>
         </View>
-        <LanguageChange refs={langRef} selLang={(item)=>{setSelectLanguage(item)}}/>
+        <LanguageChange show={showLanguage} cancel={() => setShowLanguage(false)} selLang={(item)=>{setSelectLanguage(item)}}/>
       </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

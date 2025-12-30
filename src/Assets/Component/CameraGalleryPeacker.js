@@ -6,14 +6,17 @@ import {
   TouchableOpacity,
   Platform,
   PermissionsAndroid,
+  Modal,
+  StyleSheet,
 } from 'react-native';
 import React, { useEffect } from 'react';
 // import ImagePicker from 'react-native-image-crop-picker';
-import ActionSheet from 'react-native-actions-sheet';
+// import ActionSheet from 'react-native-actions-sheet';
 import { check, PERMISSIONS, RESULTS, request, requestMultiple } from 'react-native-permissions';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 // import ImagePicker from 'react-native-image-picker';
-import Constants from '../Helpers/constant';
+import Constants, { FONTS } from '../Helpers/constant';
+import { CameraIcon, CrossIcon, ImageIcon } from '../../../Theme';
 
 const CameraGalleryPeacker = (props) => {
   // useEffect(() => {
@@ -133,7 +136,7 @@ const CameraGalleryPeacker = (props) => {
       } else {
         const source = { uri: response.uri };
       setTimeout(() => {
-        props.refs.current?.hide()
+        props.cancel()
       }, 100);
         props.getImageValue(response);
         // setSelectedImage(source);
@@ -209,105 +212,110 @@ setTimeout(() => {
 
   const onCancel = () => {
     if (props?.cancel !== undefined) {
-      props?.cancel();
-      props.refs.current?.hide();
-    }
+      props?.cancel();    }
   };
-
   return (
-    <ActionSheet
-      ref={props.refs}
-      closeOnTouchBackdrop={false}
-      closeOnPressBack={false}
-      containerStyle={{ backgroundColor: props.backgroundColor }}>
-      <View style={{ paddingHorizontal: 20, paddingVertical: 30 }}>
-        <View style={{ marginLeft: 10 }}>
-          <Text
-            style={{
-              color: props?.headerColor || Constants.black,
-              fontSize: 20,
-              fontWeight: '700',
-              marginBottom: 20,
-            }}>
-            Choose your photo
-          </Text>
+   <Modal
+        visible={props?.show}
+        transparent={true}
+        style={styles.modal}
+        onRequestClose={onCancel}>
+        <View style={styles.container}>
+          <View style={styles.cardView}>
+<View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',width:'100%',padding:15}}>
+  <View style={{width:30}}></View>
+            <Text style={styles.title}>{props?.title ? props?.title : 'Modal title'}</Text>
+                        <TouchableOpacity style={styles.crossBtn} onPress={onCancel}>
+              <CrossIcon size={25} color={Constants.white}/>
+            </TouchableOpacity>
+            </View>
+
+            <View style={styles.body}>
+              <TouchableOpacity onPress={()=>Platform.OS === 'ios' ? requestMediaPermission(launchCameras, PERMISSIONS.IOS.CAMERA) : launchCameras()} style={styles.smallCard}>
+                <CameraIcon height={20} width={20} color={Constants.white}/>
+                <Text style={styles.optionTxt}>Camera</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={()=>Platform.OS === 'ios' ? requestMediaPermission(launchImageLibrarys, PERMISSIONS.IOS.PHOTO_LIBRARY) : launchImageLibrarys()}
+                style={styles.smallCard}>
+                <ImageIcon height={20} width={20} color={Constants.white}/>
+                <Text style={styles.optionTxt}>Gallery</Text>
+              </TouchableOpacity>
+            </View>
+
+
+          </View>
         </View>
-        <TouchableOpacity
-          style={{ flexDirection: 'row', width: '100%' }}
-          onPress={() => {
-            // const permission =
-            //   Platform.OS === 'ios'
-            //     ? PERMISSIONS.IOS.CAMERA
-            //     : PERMISSIONS.ANDROID.CAMERA;
-            // requestMediaPermission(launchCameras, permission);
-            Platform.OS === 'ios' ? requestMediaPermission(launchCameras, PERMISSIONS.IOS.CAMERA) : launchCameras()
-
-
-          }}>
-          <View style={{ marginLeft: 10 }}>
-            <Text
-              style={{
-                color: props?.titleColor || Constants.black,
-                fontSize: 18,
-                fontWeight: '500',
-                opacity: 0.7,
-              }}>
-              Take a Picture
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{ flexDirection: 'row', marginTop: 10 }}
-          onPress={() => {
-            // const permission =
-            //   Platform.OS === 'ios'
-            //     ? PERMISSIONS.IOS.PHOTO_LIBRARY
-            //     : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
-            // requestMediaPermission(launchImageLibrarys, permission);
-            Platform.OS === 'ios' ? requestMediaPermission(launchImageLibrarys, PERMISSIONS.IOS.PHOTO_LIBRARY) : launchImageLibrarys()
-            // launchImageLibrarys();
-
-          }}>
-          <View style={{ marginLeft: 10 }}>
-            <Text
-              style={{
-                color: props?.titleColor || Constants.black,
-                fontSize: 18,
-                fontWeight: '500',
-                opacity: 0.7,
-              }}>
-              Choose from gallery
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            marginTop: 20,
-            alignItems: 'flex-end',
-          }}
-          onPress={() => {
-            onCancel();
-            props.refs.current?.hide();
-          }}>
-          <View style={{ marginLeft: 10, width: '100%' }}>
-            <Text
-              style={{
-                color: props?.cancelButtonColor || Constants.black,
-                fontSize: 18,
-                fontWeight: '500',
-                textAlign: 'right',
-                marginRight: 20,
-              }}>
-              CANCEL
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </ActionSheet>
+      </Modal>
   );
 };
 
 export default CameraGalleryPeacker;
+
+const styles = StyleSheet.create({
+    modal: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    // backgroundColor: Constants.white,
+    justifyContent: 'flex-end',
+  },
+  container2: {
+    flex: 1,
+    backgroundColor: Constants.red,
+    justifyContent: 'center',
+  },
+  cardView: {
+    backgroundColor: Constants.black,
+    alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  cardView2: {
+    backgroundColor: Constants.black,
+    width: '90%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    padding: 10,
+  },
+  title: {
+    color: Constants.white,
+    fontSize: 16,
+    fontFamily: FONTS.SemiBold,
+  },
+  title2: {
+    color: Constants.white,
+    fontSize: 14,
+    fontFamily: FONTS.RobotoMedium,
+  },
+  crossBtn: {
+    alignSelf: 'center',
+  },
+  btnWraper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  body: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap:50,
+    marginBottom:30
+  },
+  smallCard: {
+    height: 100,
+    width: 100,
+    backgroundColor: Constants.customgrey,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  optionTxt: {
+    color: Constants.white,
+    fontSize: 16,
+    fontFamily: FONTS.Medium,
+  },
+  })

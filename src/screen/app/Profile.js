@@ -43,7 +43,7 @@ const Profile = props => {
   useEffect(() => {
     getProfile();
   }, []);
-  const cameraRef = createRef();
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const getImageValue = async img => {
     // console.log(img);
     // console.log(img.assets[0].base64);
@@ -72,6 +72,7 @@ const Profile = props => {
   console.log('img', userDetail.img);
   const cancel = () => {
     setEdit(false);
+    setShowImagePicker(false)
   };
   const getProfile = () => {
     setLoading(true);
@@ -176,12 +177,11 @@ const Profile = props => {
     <SafeAreaView
       style={[styles.container, {backgroundColor: Constants.white}]}>
       <View style={styles.toppart}>
-        <BackIcon color={Constants.white} onPress={() => goBack()}/>
+        <BackIcon color={Constants.white} onPress={() => goBack()} style={{marginLeft:10}}/>
         <Text style={styles.carttxt}>{t('Profile')}</Text>
         {edit ?<Text style={styles.addbtn} onPress={submit}>{t('Update Profile')}</Text>:
-        <Text style={styles.addbtn} onPress={() => {
-          setEdit(true);
-        }}>{t('Edit Profile')}</Text>}
+        <Text style={styles.addbtn} onPress={() => {setEdit(true);}}>
+          {t('Edit Profile')}</Text>}
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* <Spinner color={'#fff'} visible={loading} /> */}
@@ -197,7 +197,7 @@ const Profile = props => {
           {edit && (
             <Pressable
               style={styles.editiconcov}
-              onPress={() => cameraRef.current.show()}>
+              onPress={() => setShowImagePicker(true)}>
               <EditIcon height={15} color={Constants.white} />
             </Pressable>
           )}
@@ -326,7 +326,7 @@ const Profile = props => {
         </TouchableOpacity>
       )} */}
         <CameraGalleryPeacker
-          refs={cameraRef}
+          show={showImagePicker}
           getImageValue={getImageValue}
           base64={false}
           cancel={cancel}
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
   toppart: {
     backgroundColor: Constants.violet,
     paddingTop: 5,
-    paddingBottom: 20,
+    paddingBottom: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

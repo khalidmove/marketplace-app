@@ -65,7 +65,7 @@ const Map = props => {
   const [cheakimg, setcheakimg] = useState('');
   const [uploadimg, setuploadimg] = useState([{imgname: ''}]);
 
-  const cameraRef = createRef();
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const mapRef = useRef(null);
   const animatedValue = new Animated.Value(0);
   const [routeCoordinates, setRouteCoordinates] = useState([]);
@@ -791,10 +791,10 @@ const Map = props => {
                       height={25}
                       width={25}
                       style={{alignSelf: 'center'}}
-                      onPress={() => cameraRef.current.show()}
+                      onPress={() => setShowImagePicker(true)}
                     />
                     <CameraGalleryPeacker
-                      refs={cameraRef}
+                      show={showImagePicker}
                       getImageValue={async img => {
                     
                         ApiFormData(img.assets[0]).then(
@@ -812,7 +812,7 @@ const Map = props => {
                         );
                       }}
                       base64={false}
-                      cancel={()=>{}}
+                      cancel={() => setShowImagePicker(false)}
                     />
                     <View
                       style={styles.mylivejobtitle}>
@@ -1056,10 +1056,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   shadowProp: {
-    boxShadow: '0 0 8 0.05 grey',
+    boxShadow: '0px 0px 8px 0.05px grey',
   },
   shadowProp2: {
-    boxShadow: 'inset 0 0 8 5 #1b1e22',
+    boxShadow: 'inset 0px 0px 8px 5px #1b1e22',
   },
   inrshabox: {
     flex: 1,

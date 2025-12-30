@@ -29,7 +29,7 @@ import LabelWithColon from '../../Assets/Helpers/LabelWithColon';
 
 const Products = () => {
   const {t} = useTranslation();
-  const cameraRef = createRef();
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const dropdownRef = useRef();
   const dropdownRef2 = useRef();
   const [toast, setToast] = useContext(ToastContext);
@@ -174,9 +174,6 @@ const Products = () => {
         console.log(err);
       },
     );
-  };
-  const cancel = () => {
-    // setEdit(false);
   };
   const submit = async id => {
     console.log(userDetail);
@@ -773,7 +770,7 @@ const Products = () => {
             <View style={{flexDirection: 'row', height: 150, marginTop: 20}}>
               <TouchableOpacity
                 style={styles.uploadbox}
-                onPress={() => cameraRef.current.show()}>
+                onPress={() => setShowImagePicker(true)}>
                 {/* <Image
                     source={require('../../Assets/Images/upload.png')}
                     style={styles.imgstyle}
@@ -966,10 +963,10 @@ const Products = () => {
         </View>
       )}
       <CameraGalleryPeacker
-        refs={cameraRef}
+        show={showImagePicker}
         getImageValue={getImageValue}
         base64={false}
-        cancel={cancel}
+        cancel={() => setShowImagePicker(false)}
       />
 
       {/* <CoustomDropdown

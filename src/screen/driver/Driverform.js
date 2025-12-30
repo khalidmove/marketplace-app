@@ -52,10 +52,10 @@ const Driverform = props => {
     background_check_document: '',
   });
 
-  const cameraRef = createRef();
-  const cameraRef2 = createRef();
-  const cameraRef3 = createRef();
-  const cameraRef4 = createRef();
+  const [showImagePicker1, setShowImagePicker1] = useState(false);
+  const [showImagePicker2, setShowImagePicker2] = useState(false);
+  const [showImagePicker3, setShowImagePicker3] = useState(false);
+  const [showImagePicker4, setShowImagePicker4] = useState(false);
 
   const IsFocused = useIsFocused();
   useEffect(() => {
@@ -83,7 +83,7 @@ const Driverform = props => {
     );
   };
 
-  const cancel = () => {};
+  const cancel = () => {setShowImagePicker1(false),setShowImagePicker2(false),setShowImagePicker3(false),setShowImagePicker4(false)}
   const getImageValue2 = async img => {
     ApiFormData(img.assets[0]).then(
       res => {
@@ -357,7 +357,7 @@ console.log(userDetail)
           onPress={() => {
             Keyboard.dismiss();
             setTimeout(() => {
-              cameraRef.current.show();
+              setShowImagePicker1(true)
             }, 100);
           }}>
           {/* <Image
@@ -478,7 +478,7 @@ console.log(userDetail)
           onPress={() => {
             Keyboard.dismiss();
             setTimeout(() => {
-              cameraRef2.current.show();
+              setShowImagePicker2(true)
             }, 100);
           }}>
           <UploadIcon color={Constants.violet} height={'100%'} width={'100%'} />
@@ -532,7 +532,7 @@ console.log(userDetail)
           onPress={() => {
             Keyboard.dismiss();
             setTimeout(() => {
-              cameraRef3.current.show();
+              setShowImagePicker3(true)
             }, 100);
           }}>
           <UploadIcon color={Constants.violet} height={'100%'} width={'100%'} />
@@ -559,7 +559,7 @@ console.log(userDetail)
           onPress={() => {
             Keyboard.dismiss();
             setTimeout(() => {
-              cameraRef4.current.show();
+              setShowImagePicker4(true)
             }, 100);
           }}>
           <UploadIcon color={Constants.violet} height={'100%'} width={'100%'} />
@@ -613,25 +613,25 @@ console.log(userDetail)
       </Modal>
 
       <CameraGalleryPeacker
-        refs={cameraRef}
+        show={showImagePicker1}
         getImageValue={getImageValue}
         base64={false}
         cancel={cancel}
       />
       <CameraGalleryPeacker
-        refs={cameraRef2}
+        show={showImagePicker2}
         getImageValue={getImageValue2}
         base64={false}
         cancel={cancel}
       />
       <CameraGalleryPeacker
-        refs={cameraRef3}
+        show={showImagePicker3}
         getImageValue={getImageValue3}
         base64={false}
         cancel={cancel}
       />
       <CameraGalleryPeacker
-        refs={cameraRef4}
+        show={showImagePicker4}
         getImageValue={getImageValue4}
         base64={false}
         cancel={cancel}

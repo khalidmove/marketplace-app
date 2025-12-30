@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   //   // backgroundColor:Constants.red
   // },
   shadowWrapper: {
-  boxShadow: '0 0 6 0.5 grey',
+  boxShadow: '0px 0px 6px 0.5px grey',
   borderRadius: 20,
   marginVertical: 20,
   marginHorizontal: 10,
@@ -549,7 +549,7 @@ cardimg2: {
     alignSelf: 'flex-end',
     justifyContent: 'center',
     alignItems: 'center',
-    boxShadow: '0 0 6 0 grey',
+    boxShadow: '0px 0px 6px 0px grey',
     borderRadius: 10,
     // marginRight:20
   },

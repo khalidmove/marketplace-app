@@ -55,9 +55,9 @@ import { useTranslation } from 'react-i18next';
       national_id: '',
     });
   
-    const cameraRef = createRef();
-    const cameraRef2 = createRef();
-    const cameraRef3 = createRef();
+    const [showImagePicker1, setShowImagePicker1] = useState(false);
+    const [showImagePicker2, setShowImagePicker2] = useState(false);
+    const [showImagePicker3, setShowImagePicker3] = useState(false);
   
     const IsFocused = useIsFocused();
     useEffect(() => {
@@ -85,7 +85,7 @@ import { useTranslation } from 'react-i18next';
       );
     };
     console.log('img', userDetail);
-    const cancel = () => {};
+    const cancel = () => {setShowImagePicker1(false),setShowImagePicker2(false),setShowImagePicker3(false)};
     const getImageValue2 = async img => {
       ApiFormData(img.assets[0]).then(
         res => {
@@ -220,7 +220,7 @@ import { useTranslation } from 'react-i18next';
           {edit && (
             <Pressable
               style={styles.editiconcov}
-              onPress={() => cameraRef3.current.show()}>
+              onPress={() => setShowImagePicker3(true)}>
               <EditIcon height={15} color={Constants.white} />
             </Pressable>
           )}
@@ -341,7 +341,7 @@ import { useTranslation } from 'react-i18next';
             onPress={() => {
               Keyboard.dismiss();
               setTimeout(() => {
-                edit&&cameraRef.current.show();
+                edit&&setShowImagePicker1(true);
               }, 100);
             }}>
             <UploadIcon color={Constants.violet} height={'100%'} width={'100%'} />
@@ -406,7 +406,7 @@ import { useTranslation } from 'react-i18next';
             onPress={() => {
               Keyboard.dismiss();
               setTimeout(() => {
-                edit&&cameraRef2.current.show();
+                edit&&setShowImagePicker2(true);
               }, 100);
             }}>
             {/* <Image
@@ -454,19 +454,19 @@ import { useTranslation } from 'react-i18next';
   
   
         <CameraGalleryPeacker
-          refs={cameraRef}
+          show={showImagePicker1}
           getImageValue={getImageValue}
           base64={false}
           cancel={cancel}
         />
         <CameraGalleryPeacker
-          refs={cameraRef2}
+          show={showImagePicker2}
           getImageValue={getImageValue2}
           base64={false}
           cancel={cancel2}
         />
         <CameraGalleryPeacker
-          refs={cameraRef3}
+          show={showImagePicker3}
           getImageValue={getImageValue3}
           base64={false}
           cancel={cancel2}

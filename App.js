@@ -1,29 +1,15 @@
 import React, { useEffect, useState, createContext } from 'react';
-// import {
-//   Modal,
-//   StatusBar,
-//   StyleSheet,
-//   Text,
-//   TouchableOpacity,
-//   View,
-// } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Navigation from './src/navigation';
 import CustomToaster from './src/Assets/Component/CustomToaster';
 import Constants, { FONTS } from './src/Assets/Helpers/constant';
 import { GetApi, Post } from './src/Assets/Helpers/Service';
-import Axios from 'axios';
-import { goBack } from './navigationRef';
 import {
-  Modal,
   PermissionsAndroid,
   Platform,
   StatusBar,
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
 } from 'react-native';
 import Spinner from './src/Assets/Component/Spinner';
 import Geolocation from 'react-native-geolocation-service';
@@ -31,9 +17,9 @@ import GetCurrentAddressByLatLong from './src/Assets/Component/GetCurrentAddress
 import { OneSignal } from 'react-native-onesignal';
 import i18n from './i18n';
 import CuurentLocation from './src/Assets/Component/CuurentLocation';
-import SplashScreen from 'react-native-splash-screen';
+import BootSplash from "react-native-bootsplash";
 import { PERMISSIONS, request } from 'react-native-permissions';
-import ToastManager,{ Toast } from 'toastify-react-native';
+import Toast from 'react-native-toast-message';
 // import CustomToaster from './src/Component/CustomToaster';
 // import {COLORS} from './Theme';
 // import {PaperProvider} from 'react-native-paper';
@@ -56,7 +42,7 @@ const App = () => {
 
 
   useEffect(() => {
-    SplashScreen.hide();
+    BootSplash.hide({ fade: true });
     setInitialRoute();
     checkLng()
     getCartDetail();
@@ -88,6 +74,9 @@ const App = () => {
         } else {
           setInitial('Driverform');
         }
+      }
+      else if (userDetail.type === 'EMPLOYEE') {
+        setInitial('Employeetab');
       } else {
         setInitial('App');
         // setuser(userDetail);
@@ -255,12 +244,14 @@ const App = () => {
         type: 'success',
         text1: toast,
         position: 'top',
-        visibilityTime: 2500,
-        autoHide: true, onHide: () => { setToast('') },
-      })
+        visibilityTime: 2000,
+        autoHide: true,
+        onHide: () => {
+          setToast('');
+        },
+      });
     }
-
-  }, [toast])
+  }, [toast]);
 
   return (
     <Context.Provider value={[initial, setInitial]}>
@@ -284,7 +275,7 @@ const App = () => {
                   />
                   {initial !== '' && <Navigation initial={initial} />}
                   {/* <Navigation /> */}
-                  <ToastManager />
+                  <Toast />
                 </SafeAreaView>
               </AddressContext.Provider>
             </CartContext.Provider>

@@ -54,11 +54,11 @@ const DriverProfile = props => {
     background_check_document: '',
   });
 
-  const cameraRef = createRef();
-  const cameraRef2 = createRef();
-  const cameraRef3 = createRef();
-  const cameraRef4 = createRef();
-  const cameraRef5 = createRef();
+  const [showImagePicker1, setShowImagePicker1] = useState(false);
+  const [showImagePicker2, setShowImagePicker2] = useState(false);
+  const [showImagePicker3, setShowImagePicker3] = useState(false);
+  const [showImagePicker4, setShowImagePicker4] = useState(false);
+  const [showImagePicker5, setShowImagePicker5] = useState(false);
 
   const IsFocused = useIsFocused();
   useEffect(() => {
@@ -85,7 +85,7 @@ const DriverProfile = props => {
     );
   };
 
-  const cancel = () => {};
+  const cancel = () => {setShowImagePicker1(false),setShowImagePicker2(false),setShowImagePicker3(false),setShowImagePicker4(false),setShowImagePicker5(false)};
   const getImageValue2 = async img => {
     ApiFormData(img.assets[0]).then(
       res => {
@@ -283,7 +283,7 @@ const DriverProfile = props => {
           {edit && (
             <Pressable
               style={styles.editiconcov}
-              onPress={() => cameraRef5.current.show()}>
+              onPress={() => setShowImagePicker5(true)}>
               <EditIcon height={15} color={Constants.white} />
             </Pressable>
           )}
@@ -347,7 +347,7 @@ const DriverProfile = props => {
             onPress={() => {
               Keyboard.dismiss();
               setTimeout(() => {
-                edit&&cameraRef.current.show();
+                edit&&setShowImagePicker1(true);
               }, 100);
             }}>
             {/* <Image
@@ -485,7 +485,7 @@ const DriverProfile = props => {
             onPress={() => {
               Keyboard.dismiss();
               setTimeout(() => {
-                edit&&cameraRef2.current.show();
+                edit&&setShowImagePicker2(true);
               }, 100);
             }}>
             <UploadIcon
@@ -549,7 +549,7 @@ const DriverProfile = props => {
             onPress={() => {
               Keyboard.dismiss();
               setTimeout(() => {
-                edit&&cameraRef3.current.show();
+                edit&&setShowImagePicker3(true);
               }, 100);
             }}>
             <UploadIcon
@@ -587,7 +587,7 @@ const DriverProfile = props => {
             onPress={() => {
               Keyboard.dismiss();
               setTimeout(() => {
-                edit&&cameraRef4.current.show();
+                edit&&setShowImagePicker4(true);
               }, 100);
             }}>
             <UploadIcon
@@ -622,31 +622,31 @@ const DriverProfile = props => {
         </TouchableOpacity> */}
 
         <CameraGalleryPeacker
-          refs={cameraRef}
+          show={showImagePicker1}
           getImageValue={getImageValue}
           base64={false}
           cancel={cancel}
         />
         <CameraGalleryPeacker
-          refs={cameraRef2}
+          show={showImagePicker2}
           getImageValue={getImageValue2}
           base64={false}
           cancel={cancel}
         />
         <CameraGalleryPeacker
-          refs={cameraRef3}
+          show={showImagePicker3}
           getImageValue={getImageValue3}
           base64={false}
           cancel={cancel}
         />
         <CameraGalleryPeacker
-          refs={cameraRef4}
+          show={showImagePicker4}
           getImageValue={getImageValue4}
           base64={false}
           cancel={cancel}
         />
         <CameraGalleryPeacker
-          refs={cameraRef5}
+          show={showImagePicker5}
           getImageValue={getImageValue5}
           base64={false}
           cancel={cancel}

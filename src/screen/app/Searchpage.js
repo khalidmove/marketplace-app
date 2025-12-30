@@ -22,7 +22,6 @@ import {
 import { GetApi, Post } from '../../Assets/Helpers/Service';
 import { goBack, navigate } from '../../../navigationRef';
 // import RenderHtml from 'react-native-render-html';
-import ActionSheet from 'react-native-actions-sheet';
 import { RadioButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -382,7 +381,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
  shadowWrapper: {
-  boxShadow: '0 0 6 0.5 grey',
+  boxShadow: '0px 0px 6px 0.5px grey',
   borderRadius: 20,
   marginVertical: 10,
   marginHorizontal: 10,
@@ -455,7 +454,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     justifyContent: 'center',
     alignItems: 'center',
-    boxShadow: '0 0 6 0 grey',
+    boxShadow: '0px 0px 6px 0px grey',
     borderRadius: 10,
     // marginRight:20
   },

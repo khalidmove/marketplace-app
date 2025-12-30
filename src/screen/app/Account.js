@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {createRef, useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import Constants, {FONTS} from '../../Assets/Helpers/constant';
 import {navigate, reset} from '../../../navigationRef';
 import { LoadContext, ToastContext, UserContext} from '../../../App';
@@ -37,7 +37,8 @@ const Account = props => {
   });
 const [selectLanguage, setSelectLanguage] = useState('English');
       const { t } = useTranslation();
-      const langRef = createRef()
+
+      const [showLanguage, setShowLanguage] = useState(false);
               useEffect(() => {
     checkLng();
   }, []);
@@ -208,7 +209,7 @@ const [selectLanguage, setSelectLanguage] = useState('English');
                 style={styles.aliself}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.box, styles.shadowProp]} onPress={()=>langRef.current.show()}>
+            <TouchableOpacity style={[styles.box, styles.shadowProp]} onPress={()=>setShowLanguage(true)}>
                 <Text style={styles.protxt}>{t('Change Language')}</Text>
                 <View style={{flexDirection:'row',gap:30}}>
                 <Text style={styles.protxt2}>{selectLanguage}</Text>
@@ -347,7 +348,7 @@ const [selectLanguage, setSelectLanguage] = useState('English');
           </View>
         </View>
       </Modal>
-      <LanguageChange refs={langRef} selLang={(item)=>{setSelectLanguage(item)}}/>
+      <LanguageChange show={showLanguage} cancel={() => setShowLanguage(false)} selLang={(item)=>{setSelectLanguage(item)}} />
     </SafeAreaView>
   );
 };

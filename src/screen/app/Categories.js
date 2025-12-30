@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     // boxShadow:'3 2 2 0.5 grey',
     // boxShadow:'0 0 16 10 grey',
     // boxShadow:'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px',
-    boxShadow: '0 0 6 0.5 grey',
+    boxShadow: '0px 0px 6px 0.5px grey',
     // boxShadow: 'inset 0 0 8 0.5 grey',
   },
   cardimg: {
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     width: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    boxShadow: '0 0 6 0 grey',
+    boxShadow: '0px 0px 6px 0px grey',
     borderRadius: 10,
     // marginRight:20
   },

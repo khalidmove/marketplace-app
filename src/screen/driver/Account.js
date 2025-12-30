@@ -17,7 +17,6 @@ import {
   import DriverHeader from '../../Assets/Component/DriverHeader';
   import { RightarrowIcon } from '../../../Theme';
 import { CrossIcon, Downarrow, RadiooffIcon, RadioonIcon } from '../../../Theme';
-import ActionSheet from 'react-native-actions-sheet';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../i18n';
 import LanguageChange from '../../Assets/Component/LanguageChange';
@@ -37,7 +36,7 @@ import LanguageChange from '../../Assets/Component/LanguageChange';
   
     const [selectLanguage, setSelectLanguage] = useState('English');
       const { t } = useTranslation();
-      const langRef = createRef()
+      const [showLanguage, setShowLanguage] = useState(false);
 
         useEffect(() => {
     checkLng();
@@ -175,7 +174,7 @@ import LanguageChange from '../../Assets/Component/LanguageChange';
                   style={styles.aliself}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.box, styles.shadowProp]} onPress={()=>langRef.current.show()}>
+              <TouchableOpacity style={[styles.box, styles.shadowProp]} onPress={()=>setShowLanguage(true)}>
                 <Text style={styles.protxt}>{t('Change Language')}</Text>
                 <View style={{flexDirection:'row',gap:30}}>
                 <Text style={styles.protxt2}>{selectLanguage}</Text>
@@ -314,7 +313,7 @@ import LanguageChange from '../../Assets/Component/LanguageChange';
             </View>
           </View>
         </Modal>
-          <LanguageChange refs={langRef} selLang={(item)=>{setSelectLanguage(item)}}/>
+          <LanguageChange show={showLanguage} cancel={() => setShowLanguage(false)} selLang={(item)=>{setSelectLanguage(item)}}/>
       </SafeAreaView>
     );
   };

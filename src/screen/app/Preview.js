@@ -888,7 +888,7 @@ const styles = StyleSheet.create({
     // backgroundColor:'red'
   },
   shadowWrapper: {
-    boxShadow: '0 0 6 0.5 grey',
+    boxShadow: '0px 0px 6px 0.5px grey',
     borderRadius: 20,
     marginVertical: 15,
     marginHorizontal: 10,

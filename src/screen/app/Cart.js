@@ -688,7 +688,7 @@ const styles = StyleSheet.create({
     // shadowRadius: 4,
     // elevation: 5,
     // position: 'relative',
-    boxShadow: '7 7 0 1 #FC0965',
+    boxShadow: '7px 7px 0px 1px #FC0965',
   },
   modalView2: {
     margin: 20,

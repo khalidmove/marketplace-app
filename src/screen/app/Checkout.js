@@ -33,8 +33,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { navigate } from '../../../navigationRef';
 import { RadioButton } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { Picker } from 'react-native-wheel-pick';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+// import { Picker } from 'react-native-wheel-pick';
 // import StarRating from 'react-native-star-rating-widget';
 
 const Checkout = props => {
@@ -251,7 +250,7 @@ const Checkout = props => {
 
           <View style={styles.timePickerView}>
             <Text style={[styles.deliveloctxt, { marginBottom: 0 }]}>{t('Select Time Slot')}</Text>
-            {times && times?.length > 0 && <Picker
+            {/* {times && times?.length > 0 && <Picker
               textSize={20}
               // selectTextColor={Constants.blue}
               // TextColor="white"
@@ -263,7 +262,7 @@ const Checkout = props => {
                 console.log(value);
                 setSelectedTime(value);
               }}
-            />}
+            />} */}
           </View>
 
           <Text style={styles.deliveloctxt}>{('Payment Options')}</Text>

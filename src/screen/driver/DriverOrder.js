@@ -290,10 +290,10 @@ const styles = StyleSheet.create({
     height: 150,
   },
   shadowProp: {
-    boxShadow: '0 0 8 0.05 grey',
+    boxShadow: '0px 0px 8px 0.05px grey',
   },
   shadowProp2: {
-    boxShadow: 'inset 0 0 8 5 #1b1e22',
+    boxShadow: 'inset 0px 0px 8px 5px #1b1e22',
   },
   inrshabox: {
     flex: 1,

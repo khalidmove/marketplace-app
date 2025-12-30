@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     // paddingVertical: 20,
     // alignItems: 'center',
-    boxShadow: '0 0 8 0.05 grey',
+    boxShadow: '0px 0px 8px 0.05px grey',
     // paddingHorizontal:10
   },
   popuplistcov: {

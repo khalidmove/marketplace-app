@@ -30,6 +30,7 @@ const Orderview = props => {
   const id = props?.route?.params.id;
   const [toast, setToast] = useContext(ToastContext);
   const [loading, setLoading] = useContext(LoadContext);
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const [rtnreason, setrtnreason] = useState('');
   const [orderid, setorderid] = useState('');
   const [productid, setproductid] = useState('');
@@ -37,7 +38,6 @@ const Orderview = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [uploadimg, setuploadimg] = useState([]);
 
-  const cameraRef = createRef();
   const IsFocused = useIsFocused();
   useEffect(() => {
     if (IsFocused) {
@@ -460,10 +460,10 @@ const Orderview = props => {
                 height={80}
                 width={80}
                 style={{alignSelf: 'center'}}
-                onPress={() => cameraRef.current.show()}
+                onPress={() => setShowImagePicker(true)}
               />
               <CameraGalleryPeacker
-                refs={cameraRef}
+                show={showImagePicker}
                 getImageValue={async img => {
                   setLoading(true);
                   ApiFormData(img.assets[0]).then(
@@ -480,7 +480,7 @@ const Orderview = props => {
                   );
                 }}
                 base64={false}
-                cancel={() => {}}
+                cancel={() => setShowImagePicker(false)}
               />
               <Text style={styles.imgtxt}>Upload atleast two images</Text>
               <ScrollView

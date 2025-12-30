@@ -36,3 +36,5 @@ export { default as RadioonIcon } from '../src/Assets/Icon/radioon.svg';
 export { default as RadiooffIcon } from '../src/Assets/Icon/radiooff.svg';
 export { default as Plus2Icon } from '../src/Assets/Icon/plus2.svg';
 export { default as MinusIcon } from '../src/Assets/Icon/minus.svg';
+export { default as CameraIcon } from '../src/Assets/Icon/camera.svg';
+export { default as ImageIcon } from '../src/Assets/Icon/image.svg';

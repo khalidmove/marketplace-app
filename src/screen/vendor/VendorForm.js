@@ -53,8 +53,8 @@ const VendorForm = props => {
     national_id: '',
   });
 
-  const cameraRef = createRef();
-  const cameraRef2 = createRef();
+  const [showImagePicker1, setShowImagePicker1] = useState(false);
+  const [showImagePicker2, setShowImagePicker2] = useState(false);
 
   const IsFocused = useIsFocused();
   useEffect(() => {
@@ -82,7 +82,7 @@ const VendorForm = props => {
     );
   };
   console.log('img', userDetail);
-  const cancel = () => {};
+  const cancel = () => {setShowImagePicker1(false),setShowImagePicker2(false)}
   const getImageValue2 = async img => {
     ApiFormData(img.assets[0]).then(
       res => {
@@ -100,8 +100,6 @@ const VendorForm = props => {
       },
     );
   };
-  // console.log('img', userDetail.img);
-  const cancel2 = () => {};
   
   const getProfile =() => {
     setLoading(true);
@@ -369,7 +367,7 @@ const VendorForm = props => {
           onPress={() => {
             Keyboard.dismiss();
             setTimeout(() => {
-              cameraRef.current.show();
+              setShowImagePicker1(true)
             }, 100);
           }}>
           <UploadIcon color={Constants.violet} height={'100%'} width={'100%'} />
@@ -432,7 +430,7 @@ const VendorForm = props => {
           onPress={() => {
             Keyboard.dismiss();
             setTimeout(() => {
-              cameraRef2.current.show();
+              setShowImagePicker2(true)
             }, 100);
           }}>
           {/* <Image
@@ -504,16 +502,16 @@ const VendorForm = props => {
       </Modal>
 
       <CameraGalleryPeacker
-        refs={cameraRef}
+        show={showImagePicker1}
         getImageValue={getImageValue}
         base64={false}
         cancel={cancel}
       />
       <CameraGalleryPeacker
-        refs={cameraRef2}
+        show={showImagePicker2}
         getImageValue={getImageValue2}
         base64={false}
-        cancel={cancel2}
+        cancel={cancel}
       />
     </ScrollView>
   );

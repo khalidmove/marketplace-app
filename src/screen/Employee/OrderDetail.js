@@ -253,10 +253,10 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   shadowProp: {
-    boxShadow: '0 0 8 0.05 grey',
+    boxShadow: '0px 0px 8px 0.05px grey',
   },
   shadowProp2: {
-    boxShadow: 'inset 0 0 8 8 #1b1e22',
+    boxShadow: 'inset 0px 0px 8px 8px #1b1e22',
   },
   donebtn:{
     backgroundColor:Constants.pink,
