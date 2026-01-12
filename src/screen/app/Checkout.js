@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Constants, { Currency, FONTS } from '../../Assets/Helpers/constant';
 import { useIsFocused } from '@react-navigation/native';
 import {
@@ -33,6 +33,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { navigate } from '../../../navigationRef';
 import { RadioButton } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import { Dropdown } from 'react-native-element-dropdown';
 // import { Picker } from 'react-native-wheel-pick';
 // import StarRating from 'react-native-star-rating-widget';
 
@@ -50,6 +51,7 @@ const Checkout = props => {
   const [jobtype, setjobtype] = useState('pay');
   const [lessamount, setlessamount] = useState(false);
   const [times, setTimes] = useState([]);
+  const dropdownRef = useRef();
   // const [times, setTimes] = useState([
   //   '9:00 AM to 10:00 AM',
   //   '10:00 AM to 11:00 AM',
@@ -176,7 +178,10 @@ const Checkout = props => {
         setLoading(false);
         console.log(res);
         const formatted = res?.data?.timeSlots.filter(item => item.status)
-          .map(item => `${item.startTime} - ${item.endTime}`);
+          .map(item => ({
+    label: `${item.startTime} - ${item.endTime}`,
+    value: `${item.startTime} - ${item.endTime}`,
+  }));
         setTimes(formatted);
         setSelectedTime(formatted[0])
       },
@@ -249,7 +254,7 @@ const Checkout = props => {
           </View>
 
           <View style={styles.timePickerView}>
-            <Text style={[styles.deliveloctxt, { marginBottom: 0 }]}>{t('Select Time Slot')}</Text>
+            <Text style={[styles.deliveloctxt, { marginBottom: 5,marginLeft:0 }]}>{t('Select Time Slot')}</Text>
             {/* {times && times?.length > 0 && <Picker
               textSize={20}
               // selectTextColor={Constants.blue}
@@ -263,6 +268,33 @@ const Checkout = props => {
                 setSelectedTime(value);
               }}
             />} */}
+            <Dropdown
+              ref={dropdownRef}
+                    data={times}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={t("Select Time Slot")}
+                    value={selectedTime}
+                    onChange={item =>{}}
+                    renderItem={(item) => (
+                      <TouchableOpacity
+                        style={styles.itemContainer}
+                        onPress={() => {
+                          setSelectedTime(item?.value)
+                          dropdownRef.current?.close();
+                        }}
+                      >
+                        <Text style={styles.itemText}>{item?.value}</Text>
+                      </TouchableOpacity>
+                    )}
+                    style={styles.dropdown}
+                    // containerStyle={styles.dropdownContainer}
+                    placeholderStyle={styles.placeholder}
+                    selectedTextStyle={styles.selectedText}
+                    // selectedStyle={styles.selectedStyle}
+                    // itemTextStyle={styles.itemText}
+                    // itemContainerStyle={styles.itemContainerStyle}
+                  />
           </View>
 
           <Text style={styles.deliveloctxt}>{('Payment Options')}</Text>
@@ -701,8 +733,39 @@ const styles = StyleSheet.create({
     // color: Constants.white
   },
   timePickerView: {
-    borderRadius: 20,
+    // borderRadius: 20,
     overflow: 'hidden',
-    marginBottom: 10
+    marginBottom: 10,
+    marginHorizontal:15,
+  },
+
+  dropdown: {
+    height: 55,
+    backgroundColor:Constants.customgrey4,
+    borderRadius:15,
+    paddingHorizontal:10
+  },
+  placeholder: {
+    color: Constants.customgrey,
+    fontSize: 14,
+    fontFamily: FONTS.Medium,
+    paddingVertical:12
+  },
+  selectedText: {
+    color: Constants.black,
+    fontSize: 14,
+    fontFamily: FONTS.Medium,
+    paddingVertical:12,
+  },
+  itemText: {
+    fontSize: 14,
+    color: Constants.white,
+    fontFamily: FONTS.Medium,
+  },
+  itemContainer: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    // width: '100%',
+    backgroundColor:Constants.violet
   },
 });

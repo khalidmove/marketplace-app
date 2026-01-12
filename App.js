@@ -42,7 +42,6 @@ const App = () => {
 
 
   useEffect(() => {
-    BootSplash.hide({ fade: true });
     setInitialRoute();
     checkLng()
     getCartDetail();
@@ -84,6 +83,7 @@ const App = () => {
     } else {
       setInitial('Auth');
     }
+    BootSplash.hide({ fade: true });
   };
 
 
@@ -270,7 +270,7 @@ const App = () => {
                     setToast={setToast}
                   /> */}
                   <StatusBar
-                    barStyle={Platform.OS === 'android' ? "dark-content" : "light-content"}
+                    barStyle={ "light-content"}
                     backgroundColor={'white'}
                   />
                   {initial !== '' && <Navigation initial={initial} />}
@@ -289,7 +289,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: Constants.violet
+    backgroundColor: Constants.violet
   },
 });
 

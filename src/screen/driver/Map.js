@@ -396,8 +396,16 @@ const Map = props => {
         <TouchableOpacity style={styles.box}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ flexDirection: 'row' }}>
-              <Image
-                // source={require('../../Assets/Images/profile4.png')}
+              {locationtpye === 'shop'?<Image
+                source={
+                  orderdetail?.seller_id?.img
+                    ? {
+                      uri: `${orderdetail?.seller_id?.img}`,
+                    }
+                    : require('../../Assets/Images/profile.png')
+                }
+                style={styles.hi}
+              />:<Image
                 source={
                   orderdetail?.user?.img
                     ? {
@@ -406,8 +414,7 @@ const Map = props => {
                     : require('../../Assets/Images/profile.png')
                 }
                 style={styles.hi}
-              // onPress={()=>navigate('Account')}
-              />
+              />}
               <View>
                 <Text style={styles.name}>
                   {locationtpye === 'shop'
